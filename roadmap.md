@@ -1,7 +1,6 @@
 # Roadmap
 
-- [x] Add supplied hero and event artwork
-- [x] Generate three haunting story images
-- [x] Build cinematic responsive homepage
-- [x] Add membership contact and demo payment controls
-- [x] Verify desktop and mobile presentation
+- [ ] Replace the current promotional homepage with the final literary archive design
+- [ ] Add the complete “Children At Play” story and persistent simulated paywall
+- [ ] Add archival photograph upload placeholders and exact captions
+- [ ] Verify desktop and mobile presentation, navigation, and unlock flow
