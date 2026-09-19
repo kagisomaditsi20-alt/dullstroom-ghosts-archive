@@ -159,9 +159,13 @@ function Index() {
             <ArrowLeft className="h-4 w-4" aria-hidden="true" /> Back to Stories
           </button>
           <p className="mt-10 text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Story 1</p>
-          <h1 className="mt-3 font-display text-[3.25rem] font-medium leading-none text-foreground sm:text-6xl">Children At Play</h1>
+          <h1 className="mt-3 font-display text-[3.25rem] font-medium leading-none text-foreground">Children At Play</h1>
           <div className="teaser-full mt-10 border border-teaser-border bg-teaser-full p-[22px] font-display text-xl leading-[1.7] text-reading">
-            {fullTeaser.map((paragraph) => <p key={paragraph} className="mb-4 last:mb-0">“{paragraph}{paragraph === fullTeaser[fullTeaser.length - 1] ? "”" : ""}</p>)}
+            {fullTeaser.map((paragraph, index) => (
+              <p key={paragraph} className="mb-4 last:mb-0">
+                {index === 0 ? '"' : ""}{paragraph}{index === fullTeaser.length - 1 ? '"' : ""}
+              </p>
+            ))}
           </div>
 
           {!unlocked ? (
