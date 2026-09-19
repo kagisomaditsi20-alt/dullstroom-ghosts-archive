@@ -26,6 +26,7 @@
   --color-footer: var(--footer);
   --color-hero: var(--hero);
   --color-hero-muted: var(--hero-muted);
+  --color-error: var(--error);
 }
 
 :root {
@@ -48,6 +49,7 @@
   --footer: #f4f0e7;
   --hero: #fbf8f1;
   --hero-muted: #e4e1d7;
+  --error: #8a342f;
 }
 
 @layer base {
@@ -70,8 +72,12 @@
 }
 
 .hero-overlay {
-  background: linear-gradient(to bottom, rgb(23 31 27 / 0.42), rgb(24 31 28 / 0.68));
+  background: linear-gradient(rgb(0 0 0 / 0.1), rgb(0 0 0 / 0.3));
 }
+
+.hero-copy { transform: translateY(40px); }
+.hero-copy h1, .hero-copy > p { text-shadow: 0 2px 16px rgb(0 0 0 / 0.82); }
+.hero-strap { margin-top: auto; }
 
 .foreword-wash {
   background-color: rgb(246 243 234 / 0.9);
@@ -88,11 +94,38 @@
 .story-body p { margin-bottom: 1.125rem; }
 .story-body p:last-child { margin-bottom: 0; }
 
-@media (max-width: 430px) {
-  .nav-link { font-size: 0.625rem; letter-spacing: 0.04em; }
+@media (max-width: 640px) {
+  header > div { flex-direction: column; padding-block: 0.65rem; }
+  .nav-link { font-size: 0.6rem; letter-spacing: 0.03em; }
+  .hero-copy { transform: translateY(40px); }
+  .hero-copy h1 { font-size: 3rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; }
 }
+
+.ad-slot {
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--border);
+  background: var(--placeholder);
+  color: var(--muted-foreground);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.ad-top { width: min(100%, 728px); aspect-ratio: 728 / 90; min-height: 70px; }
+.ad-sidebar { width: min(100%, 300px); aspect-ratio: 300 / 250; justify-self: center; }
+.form-control {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--background);
+  padding: 0.75rem;
+  color: var(--foreground);
+  outline: none;
+}
+.form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 2px var(--ring); }
