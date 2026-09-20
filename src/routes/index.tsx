@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ArrowLeft, ArrowRight, Image as ImageIcon } from "lucide-react";
-import { useEffect, useState } from "react";
+import { type FormEvent, useEffect, useState } from "react";
 
 import { Button } from "../components/Button";
-import highlandImage from "../assets/misty-dullstroom-highland.jpg";
+import heroBanner from "../assets/dullstroom-ghosts-hero.jpg.asset.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -68,6 +68,14 @@ const storyParagraphs = [
 function Index() {
   const [storyOpen, setStoryOpen] = useState(false);
   const [unlocked, setUnlocked] = useState(false);
+  const [submission, setSubmission] = useState({ name: "", email: "", title: "", story: "" });
+  const [permissions, setPermissions] = useState([false, false, false]);
+  const [submitted, setSubmitted] = useState(false);
+  const wordCount = submission.story.trim() ? submission.story.trim().split(/\s+/).length : 0;
+  const submissionReady = Object.values(submission).every((value) => value.trim().length > 0)
+    && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(submission.email)
+    && wordCount <= 750
+    && permissions.every(Boolean);
 
   useEffect(() => {
     setUnlocked(window.localStorage.getItem(UNLOCK_KEY) === "true");
@@ -91,6 +99,12 @@ function Index() {
     }
   }
 
+  function submitStory(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!submissionReady) return;
+    setSubmitted(true);
+  }
+
   return (
     <main className="min-h-screen overflow-x-hidden bg-background text-foreground">
       <header className="sticky top-0 z-50 border-b border-border/80 bg-background/95 backdrop-blur-md">
@@ -98,31 +112,29 @@ function Index() {
           <button type="button" className="font-display text-lg font-semibold uppercase tracking-[0.09em] text-foreground sm:text-xl" onClick={() => { setStoryOpen(false); window.scrollTo({ top: 0, behavior: "smooth" }); }}>
             Dullstroom Ghosts
           </button>
-          <nav aria-label="Main navigation" className="flex items-center gap-4 sm:gap-7">
+          <nav aria-label="Main navigation" className="flex items-center justify-center gap-3 sm:gap-7">
             <a href="#home" onClick={() => setStoryOpen(false)} className="nav-link">Home</a>
-            <a href="#stories" onClick={() => setStoryOpen(false)} className="nav-link">Stories</a>
             <a href="#foreword" onClick={() => setStoryOpen(false)} className="nav-link">Foreword</a>
+             <a href="#stories" onClick={() => setStoryOpen(false)} className="nav-link">Read the hauntings</a>
+             <a href="#submit-story" onClick={() => setStoryOpen(false)} className="nav-link">Submit</a>
           </nav>
         </div>
       </header>
 
       {!storyOpen ? (
         <div id="home">
-          <section className="hero-section relative isolate flex min-h-[62vh] items-center justify-center overflow-hidden px-5 py-24 text-center">
-            <img src={highlandImage} alt="Mist settling over the Dullstroom highlands" width={1600} height={1000} className="absolute inset-0 -z-20 h-full w-full object-cover" />
+          <section className="hero-section relative isolate flex min-h-[70vh] items-center justify-center overflow-hidden px-5 py-20 text-center">
+             <img src={heroBanner.url} alt="A misty old Dullstroom street at dusk" width={968} height={414} className="absolute inset-0 -z-20 h-full w-full object-cover object-top" />
             <div className="hero-overlay absolute inset-0 -z-10" />
-            <div className="mx-auto max-w-4xl">
-              <p className="mb-5 text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-hero-muted">A literary archive of the Mpumalanga highlands</p>
-              <h1 className="font-display text-5xl font-medium leading-none text-hero sm:text-7xl lg:text-8xl">A Town of Ghosts</h1>
-              <p className="mt-6 font-display text-2xl italic leading-snug text-hero sm:text-3xl">True stories about the ghosts of Dullstroom</p>
-              <div className="mx-auto my-7 h-px w-20 bg-hero-muted/70" />
-              <p className="text-sm leading-6 text-hero-muted sm:text-base">An atmospheric literary archive of true historical accounts.</p>
+             <div className="hero-copy mx-auto flex w-full max-w-5xl flex-col items-center">
+               <h1 className="font-display text-5xl font-bold leading-none text-hero sm:text-7xl">Dullstroom Ghosts</h1>
+               <p className="mt-7 font-display text-2xl italic leading-snug text-hero">Every town has secrets. Dullstroom has ghosts.</p>
+               <a href="#stories" className="mt-8 inline-flex min-h-11 items-center justify-center border border-hero/70 bg-background/90 px-5 py-3 text-xs font-semibold uppercase text-foreground transition-colors hover:bg-background">Read the hauntings</a>
+               <p className="hero-strap mt-10 text-base font-medium leading-6 text-hero">True stories about the real ghosts of Dullstroom</p>
             </div>
           </section>
 
-          <section id="foreword" className="foreword-section relative isolate scroll-mt-16 px-5 py-20 sm:py-28">
-            <img src={highlandImage} alt="" loading="lazy" width={1600} height={1000} aria-hidden="true" className="absolute inset-0 -z-20 h-full w-full object-cover object-center opacity-45" />
-            <div className="foreword-wash absolute inset-0 -z-10" />
+           <section id="foreword" className="scroll-mt-16 bg-background px-5 py-20 sm:py-28">
             <article className="paper-panel mx-auto max-w-[840px] p-7 sm:p-12">
               <div className="border border-border px-5 py-8 sm:px-10 sm:py-11">
                 <p className="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-muted-foreground">Permanent Foreword</p>
@@ -133,6 +145,10 @@ function Index() {
               </div>
             </article>
           </section>
+
+           <section aria-label="Advertisement" className="border-y border-border bg-card px-5 py-8">
+             <div id="ad-top" className="ad-slot ad-top mx-auto" role="complementary"><span>Advertisement</span></div>
+           </section>
 
           <section id="stories" className="scroll-mt-16 px-5 py-20 sm:py-28">
             <div className="mx-auto max-w-[840px]">
@@ -150,6 +166,50 @@ function Index() {
               </article>
             </div>
           </section>
+
+           <section aria-labelledby="event-title" className="border-y border-border bg-footer px-5 py-16 sm:py-20">
+             <article className="mx-auto max-w-[840px] border border-border bg-card p-7 text-center sm:p-10">
+               <p className="text-[0.6875rem] font-semibold uppercase text-muted-foreground">Upcoming event</p>
+               <h2 id="event-title" className="mt-3 font-display text-4xl font-semibold text-foreground">Dullstroom Ghost Walk</h2>
+               <p className="mt-3 font-display text-xl italic text-reading">Next Date TBA</p>
+             </article>
+           </section>
+
+           <section id="submit-story" className="scroll-mt-16 border-t border-border bg-card px-5 py-20 sm:py-28">
+             <div className="mx-auto max-w-[840px]">
+               <p className="text-[0.6875rem] font-semibold uppercase text-muted-foreground">Community archive</p>
+               <h2 className="mt-2 font-display text-5xl font-medium leading-none text-foreground">Submit Your Ghost Story</h2>
+               {submitted ? (
+                 <div role="status" className="mt-10 border border-primary bg-background p-8 text-center font-display text-2xl text-reading">Thank you, your story has been received for review.</div>
+               ) : (
+                 <form className="mt-10 grid gap-6" onSubmit={submitStory}>
+                   <div className="grid gap-6 sm:grid-cols-2">
+                     <FormField label="Name" name="name" type="text" value={submission.name} onChange={(value) => setSubmission({ ...submission, name: value })} />
+                     <FormField label="Email" name="email" type="email" value={submission.email} onChange={(value) => setSubmission({ ...submission, email: value })} />
+                   </div>
+                   <FormField label="Title" name="title" type="text" value={submission.title} onChange={(value) => setSubmission({ ...submission, title: value })} />
+                   <label className="grid gap-2 text-sm font-semibold text-foreground" htmlFor="story">Story
+                     <textarea id="story" name="story" required rows={12} maxLength={12000} value={submission.story} onChange={(event) => setSubmission({ ...submission, story: event.target.value })} className="form-control min-h-64 resize-y font-display text-lg font-normal leading-relaxed" />
+                     <span className={`text-right text-xs font-normal ${wordCount > 750 ? "text-error" : "text-muted-foreground"}`}>{wordCount} / 750 words</span>
+                   </label>
+                   <fieldset className="grid gap-4 border-t border-border pt-6">
+                     <legend className="mb-4 font-display text-2xl font-semibold text-foreground">Permissions</legend>
+                     {[
+                       "I give Dullstroom Ghosts permission to publish the story and to do so without expectation of compensation in any form or in any amount.",
+                       "I give Dullstroom Ghosts permission to commercialise the story without expectation of compensation in any form or in any amount.",
+                       "I give Dullstroom Ghosts permission to edit the story in any way it sees fit.",
+                     ].map((permission, index) => (
+                       <label key={permission} className="flex items-start gap-3 text-sm leading-6 text-reading">
+                         <input type="checkbox" required checked={permissions[index]} onChange={(event) => setPermissions(permissions.map((checked, permissionIndex) => permissionIndex === index ? event.target.checked : checked))} className="mt-1 h-4 w-4 accent-primary" />
+                         <span>{permission}</span>
+                       </label>
+                     ))}
+                   </fieldset>
+                   <Button type="submit" disabled={!submissionReady} className="w-full sm:w-auto sm:justify-self-start">Submit story</Button>
+                 </form>
+               )}
+             </div>
+           </section>
 
           <SiteFooter />
         </div>
@@ -207,10 +267,21 @@ function ArchiveFigure({ caption, label }: { caption: string; label: string }) {
   );
 }
 
+function FormField({ label, name, type, value, onChange }: { label: string; name: string; type: "text" | "email"; value: string; onChange: (value: string) => void }) {
+  return (
+    <label className="grid gap-2 text-sm font-semibold text-foreground" htmlFor={name}>{label}
+      <input id={name} name={name} type={type} required maxLength={type === "email" ? 254 : 120} value={value} onChange={(event) => onChange(event.target.value)} className="form-control" />
+    </label>
+  );
+}
+
 function SiteFooter() {
   return (
-    <footer className="border-t border-border bg-footer px-5 py-8 text-center">
-      <p className="text-xs text-muted-foreground">© 2026 Dullstroom Ghosts <span aria-hidden="true">•</span> True stories, respectfully told.</p>
+    <footer className="border-t border-border bg-footer px-5 py-10">
+      <div className="mx-auto grid max-w-6xl items-start gap-8 sm:grid-cols-[1fr_300px]">
+        <p className="pt-2 text-xs text-muted-foreground">© 2026 Dullstroom Ghosts <span aria-hidden="true">•</span> True stories, respectfully told.</p>
+        <div id="ad-sidebar" className="ad-slot ad-sidebar sticky top-24" role="complementary" aria-label="Advertisement"><span>Advertisement</span></div>
+      </div>
     </footer>
   );
 }
