@@ -1,9 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ArrowLeft, ArrowRight, Image as ImageIcon } from "lucide-react";
+import { ArrowLeft, ArrowRight, CreditCard, Image as ImageIcon, Mail } from "lucide-react";
 import { type FormEvent, useEffect, useState } from "react";
 
 import { Button } from "../components/Button";
 import heroBanner from "../assets/dullstroom-ghosts-hero.jpg.asset.json";
+import marketPoster from "../assets/dullstroom-village-market.jpg.asset.json";
+import friendsPortrait from "../assets/friends-united-portrait.png.asset.json";
+import childrenImage from "../assets/child-in-mist.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -27,7 +30,7 @@ export const Route = createFileRoute("/")({
 
 const PRICE = 49;
 const CURRENCY = "R";
-const UNLOCK_KEY = "dg_story1_unlocked";
+const EDITING_HOSTING_FEE = 49;
 
 const forewordParagraphs = [
   'These are not "ghost stories." These are true stories about the real ghosts of Dullstroom. They have been written to be read aloud by someone to another person or to others.',
@@ -64,6 +67,43 @@ const storyParagraphs = [
   "So was the church re-built and re-inaugurated in 1905. In line with their long-standing tradition, still today the Communion Service is held on the morning of the Sunday of the weekend nearest the end of the month.",
   "On some Communion Service week-ends, if you sit on the veranda of the Dullstroom Inn, across the road from Oranje Square and the church, somewhere between sunset and early evening, and if you keep absolutely quiet amidst the cacophony of noises caused by people drinking and socialising, you can still hear, and if you are lucky, actually see the children at play on the square around the church. They play and play and run and run and laugh and laugh until they fade away, all their energy and exuberance spent, too exhausted to continue. They love to return every so often to re-live their happiest of times in their happiest of places. They are at peace here.",
 ];
+
+const friendsTeaser = "Wolterus Dull visited what is today the town of Dullstroom in 1880 as representative of De Nederlandsche Bank van Zuid Afrika. From there through various actions and events, the town was formed.";
+
+const friendsParagraphs = [
+  'The name “Dullstroom” is a combination of the surname of Wolterus Dull and the word “stroom” (stream).',
+  friendsTeaser,
+  "The stream refers to the upper reaches of the Krokodilrivier (Crocodile River) which has its origins in the hills above and to the north of the town. By the time it runs past the town to the east thereof, it is no more than a stream. However, as it goes on it becomes a river which later forms the southern border of the Kruger Wildtuin (Kruger National Park), runs through Mozambique, and empties out in the Indian Ocean.",
+  "From the upper reaches of the river, town councils, farmers, and others have built dams. So did the early settlers and occupants of Dullstroom. They built a dam to the east of the town less than a kilometre from Oranje Plein where the church stands.",
+  "It was the habit of the residents of the town to picnic on the banks of the dam and to bathe (rather than swim) in it. As was the custom in those days, when bathing, the men and the women used to do so separately. And the women did not wear the slick tight-fitting costumes of today but rather a whole outfit of undergarments including a full-length petticoat.",
+  "These garments made it quite impossible to swim (as we understand the term today) and when wet were heavy and would have a natural tendency to sink.",
+  "And so it happened that on 30 January 1892 the women and the girls of the town set off with their picnic baskets to the dam to go and bathe and enjoy each other's company and friendship. The people of the town formed a small and tightly knit community where most were family, but all were friends and each one was reliant on all the others for their well-being in all matters related to the human condition. In 1894 the town had a population of one hundred.",
+  "However, what was to be yet another day when family and friends delighted in each other's company, turned into a disaster for this small group of friends and a catastrophe for the community as a whole.",
+  "Whilst wading a bit further than usual into the water, Machteltje, the teenage daughter of J H Janson (Jnr) and Carolina Stork, the young wife of W C Janson unexpectedly stepped into a hole deeper than the rest of the bottom of the dam around them. With their heads suddenly disappearing under water, with the fright they got and with their wet and heavy bathing attire dragging them down, panic set in. They struggled to the surface once or twice screaming. The wife of Allan Van De Poll (Aaltje Ottens) was the first to react and went to the rescue of her friends but soon got into trouble herself. Being the nearest to the others and having not stepped into the deeper hole herself, the others were able to rescue her. However, the young aunt and her young niece were beyond anyone's ability to rescue them. They were both dragged under and drowned there.",
+  "Some of the children ran into town to inform the people. All who heard the news rushed to the dam. Some men on horse arrived first to be confronted by a hysterical group of women and girls devastated by the tragedy they had just witnessed. The more accomplished swimmers amongst the men shed their boots, trousers and shirts and swam to the spot indicated by the women. They found the hole but not the bodies. More men joined the search, and they worked their way downstream in the direction of the dam wall. They found the two young women there. They had drifted into the garden formed by water lilies and water grasses and the reeds growing in the water in the clay bank perpendicular to the stone wall on the far side of the dam.",
+  "Although this was an unspeakable tragedy for the families and the whole community, the faces of the two drowned ladies had a serene look as though the Lord himself came to comfort them in their time of dread and to claim their souls for himself.",
+  "It was a long time before the townsfolk went back to the dam for a picnic or to bathe therein. But, one day the women and the girls who witnessed but survived this most tragic of events decided to go to the dam, to picnic and to bathe and to spread flower petals on the water near to where their friends so tragically perished.",
+  "As they were standing in a semi-circle up to their waists in the water, careful not to go anywhere near the hole responsible for the tragedy, and as they were spreading the petals and remembering their dear and much-loved lost friends, those same two friends appeared on the opposite bank of the dam. They were dressed in the same garments they wore on the day of their demise, but it was as bright as snow with sunlight reflecting off of it.",
+  "The women and the children smiled and waved at them and their two friends smiled and waved back at them. Nobody said anything or made any sound, and nobody referred to this happening or told anyone else about it. It was an occurrence sufficient unto itself and those who witnessed it.",
+  "From then on, every time the women and the girls of the town went to the dam to bathe, their friends would appear on the opposite bank to smile and wave at them and they returned the gestures. And still everything was done in silence, and it remained amongst them.",
+  "Over time the original survivors of that most tragic of days, grew old and died one by one. And each time those remaining, upon going to the dam to bathe, would see that the spirit of the most recently departed had joined the spirits of the original two on the opposite bank of the dam. As the survivors diminished in number, the group on the opposite bank grew. Still, they smiled and greeted each other with a wave in complete silence.",
+  "And so, it happened until only one of the original group survived. She was well into her eighties, very frail and confined to her bed or otherwise her wheelchair. One year, on the 30th of January of that year, she asked her family to dress her in her prettiest summer frock and take her to the dam. They thought she wanted to go there for a picnic and prepared everything accordingly. However, she longed for her friends and although she knew that she would be joining them soon, she wanted to see them, smile at them and wave to them one more time in this life.",
+  "Upon arriving there, however, she did not see her friends on the opposite bank of the dam. She was very distraught about this and perplexed about why they did not show up. Then, in a moment of clarity and understanding, she realised that she was not in the water. She asked her grandson to push her with the wheelchair into the water only as far as to cover her feet.",
+  "As he did so, she was looking down at the water helping to navigate her entry making sure that they did not hit any hidden stones. When her feet were covered by the water up to her ankles, she looked up and saw all her friends on the opposite bank of the dam. They were smiling and waving at her. Then she smiled and waved at them still keeping the silence between them.",
+  "Those with her did not see her friends on the opposite side and did not understand the smile and the wave but they all swore that as she did so, for a moment her youth returned, and she appeared as a beautiful young woman in the prime of her life.",
+  "Then, just as suddenly, her age returned, her arm dropped into her lap, she bowed her head and breathed out her last breath.",
+  "Immediately, a small ripple appeared on the water emanating from her wheelchair. It was like the wake of a small, toy boat departing from her wheelchair racing to the opposite bank of the dam. There was no wind to account for this.",
+  "All of a sudden, all who were there, although they saw nothing heard the joyous laughter of delight of a group of young women and girls coming from the other side of the dam. It was the kind of laughter and the sound that one hears when family and friends long separated meet up again and delight in one another's company.",
+  "It was the first and last time that anyone who was not present and did not witness the tragic events of 30 January 1892, were given a brief and limited view into the love and friendship which bound a group of friends for time and eternity.",
+  "The spirits of these women and girls never returned to the dam. There was no one else they were waiting for.",
+];
+
+type StoryId = "children" | "friends";
+
+const stories = {
+  children: { number: 1, title: "Children At Play", wordCount: "1,136", teaser, image: childrenImage, paragraphs: storyParagraphs },
+  friends: { number: 2, title: "Friends United", wordCount: "1,550", teaser: friendsTeaser, image: friendsPortrait.url, paragraphs: friendsParagraphs },
+} as const;
 
 function Index() {
   const [storyOpen, setStoryOpen] = useState(false);
