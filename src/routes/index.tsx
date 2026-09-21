@@ -164,6 +164,7 @@ function Index() {
             <a href="#stories" onClick={() => setActiveStory(null)} className="nav-link">Stories</a>
             <a href="#events" onClick={() => setActiveStory(null)} className="nav-link">Upcoming Events</a>
             <a href="#your-story" onClick={() => setActiveStory(null)} className="nav-link">Your Story</a>
+            <a href="#payment" onClick={() => setActiveStory(null)} className="nav-link">Payment</a>
           </nav>
         </div>
       </header>
@@ -197,7 +198,7 @@ function Index() {
           </section>
 
            <section aria-label="Advertisement" className="border-y border-border bg-card px-5 py-8">
-             <div id="ad-top" className="ad-slot ad-top mx-auto" role="complementary"><span>Advertisement</span></div>
+             <div id="ad-top" className="ad-slot ad-top mx-auto" role="complementary"><span>Advertisement · 728 × 90</span></div>
            </section>
 
           <section id="stories" className="scroll-mt-16 px-5 py-20 sm:py-28">
@@ -273,7 +274,7 @@ function Index() {
                     <Button type="submit" disabled={!submissionReady} className="w-full sm:w-auto sm:justify-self-start"><Mail className="h-4 w-4" aria-hidden="true" />Email story for editing</Button>
                  </form>
                )}
-                <div className="mt-12 border border-border bg-background p-7 sm:p-9">
+                <div id="payment" className="scroll-mt-24 mt-12 border border-border bg-background p-7 sm:p-9">
                   <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Payment</p>
                   <h3 className="mt-3 font-display text-3xl font-semibold text-foreground">Editing &amp; hosting fee</h3>
                   <p className="mt-3 text-sm leading-6 text-muted-foreground">Pay after your story has been reviewed and accepted. The {CURRENCY}{EDITING_HOSTING_FEE} amount is a placeholder pending final prices.</p>
@@ -347,7 +348,7 @@ function SiteFooter() {
     <footer className="border-t border-border bg-footer px-5 py-10">
       <div className="mx-auto grid max-w-6xl items-start gap-8 sm:grid-cols-[1fr_300px]">
         <p className="pt-2 text-xs text-muted-foreground">© 2026 Dullstroom Ghosts <span aria-hidden="true">•</span> True stories, respectfully told.</p>
-        <div id="ad-sidebar" className="ad-slot ad-sidebar sticky top-24" role="complementary" aria-label="Advertisement"><span>Advertisement</span></div>
+        <div id="ad-sidebar" className="ad-slot ad-sidebar sticky top-24" role="complementary" aria-label="Advertisement"><span>Advertisement · 300 × 250</span></div>
       </div>
     </footer>
   );
