@@ -106,8 +106,8 @@ const stories = {
 } as const;
 
 function Index() {
-  const [storyOpen, setStoryOpen] = useState(false);
-  const [unlocked, setUnlocked] = useState(false);
+  const [activeStory, setActiveStory] = useState<StoryId | null>(null);
+  const [unlockedStories, setUnlockedStories] = useState<StoryId[]>([]);
   const [submission, setSubmission] = useState({ name: "", email: "", title: "", story: "" });
   const [permissions, setPermissions] = useState([false, false, false]);
   const [submitted, setSubmitted] = useState(false);
@@ -118,67 +118,77 @@ function Index() {
     && permissions.every(Boolean);
 
   useEffect(() => {
-    setUnlocked(window.localStorage.getItem(UNLOCK_KEY) === "true");
+    setUnlockedStories((Object.keys(stories) as StoryId[]).filter((id) => window.localStorage.getItem(`dg_${id}_unlocked`) === "true"));
   }, []);
 
-  function openStory() {
-    setStoryOpen(true);
+  function openStory(id: StoryId) {
+    setActiveStory(id);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   function closeStory() {
-    setStoryOpen(false);
+    setActiveStory(null);
     window.setTimeout(() => document.querySelector("#stories")?.scrollIntoView({ behavior: "smooth" }), 0);
   }
 
-  function unlockStory() {
+  function unlockStory(id: StoryId) {
     // TODO: Replace this confirmation with Paystack or Yoco checkout.
     if (window.confirm(`Simulate secure payment of ${CURRENCY}${PRICE} and unlock this story?`)) {
-      window.localStorage.setItem(UNLOCK_KEY, "true");
-      setUnlocked(true);
+      window.localStorage.setItem(`dg_${id}_unlocked`, "true");
+      setUnlockedStories((current) => current.includes(id) ? current : [...current, id]);
     }
   }
 
   function submitStory(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!submissionReady) return;
+    const subject = encodeURIComponent(`Ghost story for editing: ${submission.title}`);
+    const body = encodeURIComponent(`Name: ${submission.name}\nEmail: ${submission.email}\n\n${submission.story}`);
+    window.location.href = `mailto:kagisomaditsi20@gmail.com?subject=${subject}&body=${body}`;
     setSubmitted(true);
   }
+
+  const currentStory = activeStory ? stories[activeStory] : null;
+  const currentUnlocked = activeStory ? unlockedStories.includes(activeStory) : false;
 
   return (
     <main className="min-h-screen overflow-x-hidden bg-background text-foreground">
       <header className="sticky top-0 z-50 border-b border-border/80 bg-background/95 backdrop-blur-md">
         <div className="mx-auto flex min-h-16 max-w-6xl items-center justify-between gap-4 px-5 lg:px-8">
-          <button type="button" className="font-display text-lg font-semibold uppercase tracking-[0.09em] text-foreground sm:text-xl" onClick={() => { setStoryOpen(false); window.scrollTo({ top: 0, behavior: "smooth" }); }}>
+          <button type="button" className="font-display text-lg font-semibold uppercase tracking-[0.09em] text-foreground sm:text-xl" onClick={() => { setActiveStory(null); window.scrollTo({ top: 0, behavior: "smooth" }); }}>
             Dullstroom Ghosts
           </button>
           <nav aria-label="Main navigation" className="flex items-center justify-center gap-3 sm:gap-7">
-            <a href="#home" onClick={() => setStoryOpen(false)} className="nav-link">Home</a>
-            <a href="#foreword" onClick={() => setStoryOpen(false)} className="nav-link">Foreword</a>
-             <a href="#stories" onClick={() => setStoryOpen(false)} className="nav-link">Read the hauntings</a>
-             <a href="#submit-story" onClick={() => setStoryOpen(false)} className="nav-link">Submit</a>
+            <a href="#home" onClick={() => setActiveStory(null)} className="nav-link">Home</a>
+            <a href="#introduction" onClick={() => setActiveStory(null)} className="nav-link">Introduction</a>
+            <a href="#stories" onClick={() => setActiveStory(null)} className="nav-link">Stories</a>
+            <a href="#events" onClick={() => setActiveStory(null)} className="nav-link">Upcoming Events</a>
+            <a href="#your-story" onClick={() => setActiveStory(null)} className="nav-link">Your Story</a>
           </nav>
         </div>
       </header>
 
-      {!storyOpen ? (
+      {!activeStory ? (
         <div id="home">
           <section className="hero-section relative isolate flex min-h-[70vh] items-center justify-center overflow-hidden px-5 py-20 text-center">
              <img src={heroBanner.url} alt="A misty old Dullstroom street at dusk" width={968} height={414} className="absolute inset-0 -z-20 h-full w-full object-cover object-top" />
-            <div className="hero-overlay absolute inset-0 -z-10" />
-             <div className="hero-copy mx-auto flex w-full max-w-5xl flex-col items-center">
-               <h1 className="font-display text-5xl font-bold leading-none text-hero sm:text-7xl">Dullstroom Ghosts</h1>
-               <p className="mt-7 font-display text-2xl italic leading-snug text-hero">Every town has secrets. Dullstroom has ghosts.</p>
-               <a href="#stories" className="mt-8 inline-flex min-h-11 items-center justify-center border border-hero/70 bg-background/90 px-5 py-3 text-xs font-semibold uppercase text-foreground transition-colors hover:bg-background">Read the hauntings</a>
-               <p className="hero-strap mt-10 text-base font-medium leading-6 text-hero">True stories about the real ghosts of Dullstroom</p>
+             <div className="hero-overlay absolute inset-0 -z-10" />
+              <div className="hero-copy mx-auto flex min-h-[calc(70vh-10rem)] w-full max-w-5xl flex-col items-center">
+                <h1 className="sr-only">Dullstroom Ghosts</h1>
+                <p className="font-display text-2xl font-semibold text-hero sm:text-3xl">Dullstroom Ghosts</p>
+                <p className="mt-3 font-display text-[1.7rem] italic leading-snug text-hero sm:text-[2rem]">Every town has secrets. Dullstroom has ghosts.</p>
+                <div className="mt-auto flex flex-col items-center pt-8">
+                  <p className="text-base font-medium leading-6 text-hero">True stories about the real ghosts of Dullstroom</p>
+                  <a href="#stories" className="mt-5 inline-flex min-h-11 items-center justify-center border border-hero/70 bg-background/90 px-5 py-3 text-xs font-semibold uppercase text-foreground transition-colors hover:bg-background">Read the Hauntings</a>
+                </div>
             </div>
           </section>
 
-           <section id="foreword" className="scroll-mt-16 bg-background px-5 py-20 sm:py-28">
+            <section id="introduction" className="scroll-mt-16 bg-background px-5 py-20 sm:py-28">
             <article className="paper-panel mx-auto max-w-[840px] p-7 sm:p-12">
               <div className="border border-border px-5 py-8 sm:px-10 sm:py-11">
-                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-muted-foreground">Permanent Foreword</p>
-                <h2 className="mt-3 font-display text-[2.625rem] font-medium leading-none text-foreground">Foreword</h2>
+                 <p className="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-muted-foreground">Introduction</p>
+                 <h2 className="mt-3 font-display text-[2.625rem] font-medium leading-none text-foreground">Introduction</h2>
                 <div className="mt-8 font-display text-[1.1875rem] leading-[1.75] text-reading">
                   {forewordParagraphs.map((paragraph) => <p key={paragraph} className="mb-4 last:mb-0">{paragraph}</p>)}
                 </div>
@@ -193,32 +203,47 @@ function Index() {
           <section id="stories" className="scroll-mt-16 px-5 py-20 sm:py-28">
             <div className="mx-auto max-w-[840px]">
               <div className="mb-10 border-b border-border pb-5">
-                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-muted-foreground">The archive</p>
                 <h2 className="mt-2 font-display text-5xl font-medium leading-none text-foreground">Stories</h2>
               </div>
-              <article className="story-card border border-border bg-card p-6 sm:p-10">
-                <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Story 1</p>
-                <h3 className="mt-3 font-display text-3xl font-medium text-foreground">Children At Play</h3>
-                <blockquote className="mt-6 border-l-[3px] border-accent bg-teaser px-4 py-3.5 font-display text-lg italic leading-relaxed text-reading">“{teaser}”</blockquote>
-                <Button className="mt-7 w-full sm:w-auto" onClick={openStory}>
-                  Unlock full story for {CURRENCY}{PRICE}<ArrowRight className="h-4 w-4" aria-hidden="true" />
-                </Button>
-              </article>
+               <div className="grid gap-7 md:grid-cols-2">
+                 {(Object.entries(stories) as [StoryId, typeof stories[StoryId]][]).map(([id, story]) => (
+                   <article key={id} className="story-card flex flex-col overflow-hidden border border-border bg-card">
+                     <img src={story.image} alt={story.title === "Friends United" ? "Historic portrait of a young Dullstroom woman" : "Children in the mist"} className="aspect-[16/10] w-full object-cover object-top" />
+                     <div className="flex flex-1 flex-col p-6 sm:p-8">
+                       <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Story {story.number}</p>
+                       <h3 className="mt-3 font-display text-3xl font-medium text-foreground">{story.title} ({story.wordCount} words)</h3>
+                       <blockquote className="mt-5 border-l-[3px] border-accent bg-teaser px-4 py-3.5 font-display text-lg italic leading-relaxed text-reading">“{story.teaser}”</blockquote>
+                       <Button className="mt-7 w-full sm:w-auto" onClick={() => openStory(id)}>
+                         Read story<ArrowRight className="h-4 w-4" aria-hidden="true" />
+                       </Button>
+                     </div>
+                   </article>
+                 ))}
+               </div>
+               <p className="mt-6 text-center text-xs text-muted-foreground">Story price shown as {CURRENCY}{PRICE} for review; final pricing to be confirmed.</p>
             </div>
           </section>
 
-           <section aria-labelledby="event-title" className="border-y border-border bg-footer px-5 py-16 sm:py-20">
-             <article className="mx-auto max-w-[840px] border border-border bg-card p-7 text-center sm:p-10">
-               <p className="text-[0.6875rem] font-semibold uppercase text-muted-foreground">Upcoming event</p>
-               <h2 id="event-title" className="mt-3 font-display text-4xl font-semibold text-foreground">Dullstroom Ghost Walk</h2>
-               <p className="mt-3 font-display text-xl italic text-reading">Next Date TBA</p>
-             </article>
+            <section id="events" aria-labelledby="event-title" className="scroll-mt-16 border-y border-border bg-footer px-5 py-16 sm:py-20">
+              <div className="mx-auto max-w-5xl">
+                <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">What’s on in Dullstroom</p>
+                <h2 id="event-title" className="mt-2 font-display text-5xl font-medium text-foreground">Upcoming Events</h2>
+                <article className="mt-9 grid gap-8 border border-border bg-card p-5 sm:grid-cols-[minmax(0,440px)_1fr] sm:p-8">
+                  <img src={marketPoster.url} alt="Dullstroom Village Market Hello Spring, 3 and 4 October 2026" className="w-full border border-border object-cover" />
+                  <div className="self-center">
+                    <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Featured event</p>
+                    <h3 className="mt-3 font-display text-4xl font-semibold text-foreground">Dullstroom Village Market</h3>
+                    <p className="mt-4 font-display text-xl italic text-reading">Hello Spring · 3 &amp; 4 October 2026 · Verlorenkloof</p>
+                  </div>
+                </article>
+              </div>
            </section>
 
-           <section id="submit-story" className="scroll-mt-16 border-t border-border bg-card px-5 py-20 sm:py-28">
-             <div className="mx-auto max-w-[840px]">
+            <section id="your-story" className="scroll-mt-16 border-t border-border bg-card px-5 py-20 sm:py-28">
+             <div className="mx-auto max-w-6xl">
                <p className="text-[0.6875rem] font-semibold uppercase text-muted-foreground">Community archive</p>
-               <h2 className="mt-2 font-display text-5xl font-medium leading-none text-foreground">Submit Your Ghost Story</h2>
+                <h2 className="mt-2 font-display text-5xl font-medium leading-none text-foreground">Your Story</h2>
+                <p className="mt-5 max-w-2xl font-display text-xl leading-relaxed text-reading">Send your account to our editor for review. Stories are edited first and are never published automatically.</p>
                {submitted ? (
                  <div role="status" className="mt-10 border border-primary bg-background p-8 text-center font-display text-2xl text-reading">Thank you, your story has been received for review.</div>
                ) : (
@@ -245,50 +270,52 @@ function Index() {
                        </label>
                      ))}
                    </fieldset>
-                   <Button type="submit" disabled={!submissionReady} className="w-full sm:w-auto sm:justify-self-start">Submit story</Button>
+                    <Button type="submit" disabled={!submissionReady} className="w-full sm:w-auto sm:justify-self-start"><Mail className="h-4 w-4" aria-hidden="true" />Email story for editing</Button>
                  </form>
                )}
+                <div className="mt-12 border border-border bg-background p-7 sm:p-9">
+                  <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Payment</p>
+                  <h3 className="mt-3 font-display text-3xl font-semibold text-foreground">Editing &amp; hosting fee</h3>
+                  <p className="mt-3 text-sm leading-6 text-muted-foreground">Pay after your story has been reviewed and accepted. The {CURRENCY}{EDITING_HOSTING_FEE} amount is a placeholder pending final prices.</p>
+                  <Button type="button" className="mt-6" onClick={() => window.alert("Payment setup will be connected after final pricing is confirmed.")}><CreditCard className="h-4 w-4" aria-hidden="true" />Pay editing &amp; hosting fee</Button>
+                </div>
              </div>
            </section>
 
           <SiteFooter />
         </div>
       ) : (
-        <article id="story-page" className="mx-auto max-w-[840px] px-5 py-12 sm:py-20">
+        currentStory && <article id="story-page" className="mx-auto max-w-[840px] px-5 py-12 sm:py-20">
           <button type="button" onClick={closeStory} className="inline-flex min-h-11 items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground transition-colors hover:text-primary">
             <ArrowLeft className="h-4 w-4" aria-hidden="true" /> Back to Stories
           </button>
-          <p className="mt-10 text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Story 1</p>
-          <h1 className="mt-3 font-display text-[3.25rem] font-medium leading-none text-foreground">Children At Play</h1>
+          <p className="mt-10 text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Story {currentStory.number}</p>
+          <h1 className="mt-3 font-display text-[3.25rem] font-medium leading-none text-foreground">{currentStory.title} ({currentStory.wordCount} words)</h1>
           <div className="teaser-full mt-10 border border-teaser-border bg-teaser-full p-[22px] font-display text-xl leading-[1.7] text-reading">
-            {fullTeaser.map((paragraph, index) => (
-              <p key={paragraph} className="mb-4 last:mb-0">
-                {index === 0 ? '"' : ""}{paragraph}{index === fullTeaser.length - 1 ? '"' : ""}
-              </p>
-            ))}
+            <p>“{activeStory === "children" ? fullTeaser.join(" ") : friendsTeaser}”</p>
           </div>
 
-          {!unlocked ? (
+          {!currentUnlocked ? (
             <div id="paywallBox" className="mt-8 border border-foreground bg-card p-6 text-center sm:p-8">
               <p className="font-display text-xl leading-relaxed text-reading">This is a true historical account. Unlock complete story with original photographs.</p>
-              <Button id="unlockBtn" className="mt-6 w-full sm:w-auto" onClick={unlockStory}>Unlock full story for {CURRENCY}{PRICE}</Button>
+              <Button id="unlockBtn" className="mt-6 w-full sm:w-auto" onClick={() => activeStory && unlockStory(activeStory)}>Unlock full story for {CURRENCY}{PRICE}</Button>
               <p className="mt-4 text-[0.625rem] font-semibold uppercase tracking-[0.2em] text-muted-foreground">Secure payment</p>
             </div>
           ) : (
             <div id="lockedContent" className="mt-12">
               <div className="story-body font-display text-xl leading-[1.85] text-reading">
-                {storyParagraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+                {currentStory.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
               </div>
-              <div className="mt-14 grid gap-8 sm:grid-cols-2">
+              {activeStory === "children" ? <div className="mt-14 grid gap-8 sm:grid-cols-2">
                 <ArchiveFigure caption="Die Hervormde Kerk van Afrika, Dullstroom. Inauguration 1895." label="1895 church photograph" />
                 <ArchiveFigure caption="The church sometime after 18 April 1901." label="Church after April 1901 photograph" />
-              </div>
+              </div> : <figure className="mt-14 border border-border bg-card p-3"><img src={friendsPortrait.url} alt="Historic portrait accompanying Friends United" className="w-full sepia-[0.15]" /><figcaption className="px-2 pb-1 pt-3 text-center font-display text-sm italic text-caption">Historical photograph supplied with “Friends United”.</figcaption></figure>}
             </div>
           )}
         </article>
       )}
 
-      {storyOpen && <SiteFooter />}
+      {activeStory && <SiteFooter />}
     </main>
   );
 }
