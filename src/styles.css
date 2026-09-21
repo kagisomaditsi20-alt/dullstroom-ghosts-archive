@@ -30,26 +30,26 @@
 }
 
 :root {
-  --background: #fbf8f1;
-  --foreground: #1f2421;
-  --card: #fffcf6;
-  --primary: #33473e;
-  --primary-bright: #455f53;
-  --primary-foreground: #fbf8f1;
-  --muted-foreground: #6b766f;
-  --border: #e7e0d1;
-  --ring: #52685e;
-  --reading: #303632;
-  --accent: #c8c0ad;
-  --teaser: #fbf6eb;
-  --teaser-full: #fff8e8;
-  --teaser-border: #e9ddc3;
-  --caption: #6b766f;
-  --placeholder: #f2ecdf;
-  --footer: #f4f0e7;
-  --hero: #fbf8f1;
-  --hero-muted: #e4e1d7;
-  --error: #8a342f;
+  --background: #0a0a0a;
+  --foreground: #f5f5dc;
+  --card: #141412;
+  --primary: #8b0000;
+  --primary-bright: #ad1717;
+  --primary-foreground: #f5f5dc;
+  --muted-foreground: #b8b7a8;
+  --border: #3d3c36;
+  --ring: #b85a54;
+  --reading: #e5e3d1;
+  --accent: #8b0000;
+  --teaser: #1c1b18;
+  --teaser-full: #181714;
+  --teaser-border: #544d40;
+  --caption: #b8b7a8;
+  --placeholder: #201f1b;
+  --footer: #050505;
+  --hero: #f5f5dc;
+  --hero-muted: #d8d6c5;
+  --error: #dc6b62;
 }
 
 @layer base {
@@ -85,17 +85,18 @@
 }
 
 .paper-panel {
-  background: rgb(251 248 241 / 0.96);
+  background: rgb(20 20 18 / 0.97);
   border: 1px solid var(--border);
-  box-shadow: 0 24px 80px rgb(52 50 43 / 0.14), 0 2px 8px rgb(52 50 43 / 0.08);
+  box-shadow: 0 24px 80px rgb(0 0 0 / 0.34), 0 2px 8px rgb(0 0 0 / 0.3);
 }
 
-.story-card { box-shadow: 0 18px 55px rgb(52 50 43 / 0.08); }
+.story-card { box-shadow: 0 18px 55px rgb(0 0 0 / 0.3); }
 .story-body p { margin-bottom: 1.125rem; }
 .story-body p:last-child { margin-bottom: 0; }
 
 @media (max-width: 640px) {
   header > div { flex-direction: column; padding-block: 0.65rem; }
+  header nav { flex-wrap: wrap; row-gap: 0.45rem; }
   .nav-link { font-size: 0.6rem; letter-spacing: 0.03em; }
   .hero-copy { transform: translateY(40px); }
   .hero-copy h1 { font-size: 3rem; }
@@ -116,6 +117,7 @@
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+  background-image: repeating-linear-gradient(135deg, transparent 0, transparent 10px, rgb(245 245 220 / 0.035) 10px, rgb(245 245 220 / 0.035) 11px);
 }
 .ad-top { width: min(100%, 728px); aspect-ratio: 728 / 90; min-height: 70px; }
 .ad-sidebar { width: min(100%, 300px); aspect-ratio: 300 / 250; justify-self: center; }

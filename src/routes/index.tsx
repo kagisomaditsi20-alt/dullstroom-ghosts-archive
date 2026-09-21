@@ -1,9 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ArrowLeft, ArrowRight, Image as ImageIcon } from "lucide-react";
+import { ArrowLeft, ArrowRight, CreditCard, Image as ImageIcon, Mail } from "lucide-react";
 import { type FormEvent, useEffect, useState } from "react";
 
 import { Button } from "../components/Button";
 import heroBanner from "../assets/dullstroom-ghosts-hero.jpg.asset.json";
+import marketPoster from "../assets/dullstroom-village-market.jpg.asset.json";
+import friendsPortrait from "../assets/friends-united-portrait.png.asset.json";
+import childrenImage from "../assets/child-in-mist.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -27,7 +30,7 @@ export const Route = createFileRoute("/")({
 
 const PRICE = 49;
 const CURRENCY = "R";
-const UNLOCK_KEY = "dg_story1_unlocked";
+const EDITING_HOSTING_FEE = 49;
 
 const forewordParagraphs = [
   'These are not "ghost stories." These are true stories about the real ghosts of Dullstroom. They have been written to be read aloud by someone to another person or to others.',
@@ -65,9 +68,46 @@ const storyParagraphs = [
   "On some Communion Service week-ends, if you sit on the veranda of the Dullstroom Inn, across the road from Oranje Square and the church, somewhere between sunset and early evening, and if you keep absolutely quiet amidst the cacophony of noises caused by people drinking and socialising, you can still hear, and if you are lucky, actually see the children at play on the square around the church. They play and play and run and run and laugh and laugh until they fade away, all their energy and exuberance spent, too exhausted to continue. They love to return every so often to re-live their happiest of times in their happiest of places. They are at peace here.",
 ];
 
+const friendsTeaser = "Wolterus Dull visited what is today the town of Dullstroom in 1880 as representative of De Nederlandsche Bank van Zuid Afrika. From there through various actions and events, the town was formed.";
+
+const friendsParagraphs = [
+  'The name “Dullstroom” is a combination of the surname of Wolterus Dull and the word “stroom” (stream).',
+  friendsTeaser,
+  "The stream refers to the upper reaches of the Krokodilrivier (Crocodile River) which has its origins in the hills above and to the north of the town. By the time it runs past the town to the east thereof, it is no more than a stream. However, as it goes on it becomes a river which later forms the southern border of the Kruger Wildtuin (Kruger National Park), runs through Mozambique, and empties out in the Indian Ocean.",
+  "From the upper reaches of the river, town councils, farmers, and others have built dams. So did the early settlers and occupants of Dullstroom. They built a dam to the east of the town less than a kilometre from Oranje Plein where the church stands.",
+  "It was the habit of the residents of the town to picnic on the banks of the dam and to bathe (rather than swim) in it. As was the custom in those days, when bathing, the men and the women used to do so separately. And the women did not wear the slick tight-fitting costumes of today but rather a whole outfit of undergarments including a full-length petticoat.",
+  "These garments made it quite impossible to swim (as we understand the term today) and when wet were heavy and would have a natural tendency to sink.",
+  "And so it happened that on 30 January 1892 the women and the girls of the town set off with their picnic baskets to the dam to go and bathe and enjoy each other's company and friendship. The people of the town formed a small and tightly knit community where most were family, but all were friends and each one was reliant on all the others for their well-being in all matters related to the human condition. In 1894 the town had a population of one hundred.",
+  "However, what was to be yet another day when family and friends delighted in each other's company, turned into a disaster for this small group of friends and a catastrophe for the community as a whole.",
+  "Whilst wading a bit further than usual into the water, Machteltje, the teenage daughter of J H Janson (Jnr) and Carolina Stork, the young wife of W C Janson unexpectedly stepped into a hole deeper than the rest of the bottom of the dam around them. With their heads suddenly disappearing under water, with the fright they got and with their wet and heavy bathing attire dragging them down, panic set in. They struggled to the surface once or twice screaming. The wife of Allan Van De Poll (Aaltje Ottens) was the first to react and went to the rescue of her friends but soon got into trouble herself. Being the nearest to the others and having not stepped into the deeper hole herself, the others were able to rescue her. However, the young aunt and her young niece were beyond anyone's ability to rescue them. They were both dragged under and drowned there.",
+  "Some of the children ran into town to inform the people. All who heard the news rushed to the dam. Some men on horse arrived first to be confronted by a hysterical group of women and girls devastated by the tragedy they had just witnessed. The more accomplished swimmers amongst the men shed their boots, trousers and shirts and swam to the spot indicated by the women. They found the hole but not the bodies. More men joined the search, and they worked their way downstream in the direction of the dam wall. They found the two young women there. They had drifted into the garden formed by water lilies and water grasses and the reeds growing in the water in the clay bank perpendicular to the stone wall on the far side of the dam.",
+  "Although this was an unspeakable tragedy for the families and the whole community, the faces of the two drowned ladies had a serene look as though the Lord himself came to comfort them in their time of dread and to claim their souls for himself.",
+  "It was a long time before the townsfolk went back to the dam for a picnic or to bathe therein. But, one day the women and the girls who witnessed but survived this most tragic of events decided to go to the dam, to picnic and to bathe and to spread flower petals on the water near to where their friends so tragically perished.",
+  "As they were standing in a semi-circle up to their waists in the water, careful not to go anywhere near the hole responsible for the tragedy, and as they were spreading the petals and remembering their dear and much-loved lost friends, those same two friends appeared on the opposite bank of the dam. They were dressed in the same garments they wore on the day of their demise, but it was as bright as snow with sunlight reflecting off of it.",
+  "The women and the children smiled and waved at them and their two friends smiled and waved back at them. Nobody said anything or made any sound, and nobody referred to this happening or told anyone else about it. It was an occurrence sufficient unto itself and those who witnessed it.",
+  "From then on, every time the women and the girls of the town went to the dam to bathe, their friends would appear on the opposite bank to smile and wave at them and they returned the gestures. And still everything was done in silence, and it remained amongst them.",
+  "Over time the original survivors of that most tragic of days, grew old and died one by one. And each time those remaining, upon going to the dam to bathe, would see that the spirit of the most recently departed had joined the spirits of the original two on the opposite bank of the dam. As the survivors diminished in number, the group on the opposite bank grew. Still, they smiled and greeted each other with a wave in complete silence.",
+  "And so, it happened until only one of the original group survived. She was well into her eighties, very frail and confined to her bed or otherwise her wheelchair. One year, on the 30th of January of that year, she asked her family to dress her in her prettiest summer frock and take her to the dam. They thought she wanted to go there for a picnic and prepared everything accordingly. However, she longed for her friends and although she knew that she would be joining them soon, she wanted to see them, smile at them and wave to them one more time in this life.",
+  "Upon arriving there, however, she did not see her friends on the opposite bank of the dam. She was very distraught about this and perplexed about why they did not show up. Then, in a moment of clarity and understanding, she realised that she was not in the water. She asked her grandson to push her with the wheelchair into the water only as far as to cover her feet.",
+  "As he did so, she was looking down at the water helping to navigate her entry making sure that they did not hit any hidden stones. When her feet were covered by the water up to her ankles, she looked up and saw all her friends on the opposite bank of the dam. They were smiling and waving at her. Then she smiled and waved at them still keeping the silence between them.",
+  "Those with her did not see her friends on the opposite side and did not understand the smile and the wave but they all swore that as she did so, for a moment her youth returned, and she appeared as a beautiful young woman in the prime of her life.",
+  "Then, just as suddenly, her age returned, her arm dropped into her lap, she bowed her head and breathed out her last breath.",
+  "Immediately, a small ripple appeared on the water emanating from her wheelchair. It was like the wake of a small, toy boat departing from her wheelchair racing to the opposite bank of the dam. There was no wind to account for this.",
+  "All of a sudden, all who were there, although they saw nothing heard the joyous laughter of delight of a group of young women and girls coming from the other side of the dam. It was the kind of laughter and the sound that one hears when family and friends long separated meet up again and delight in one another's company.",
+  "It was the first and last time that anyone who was not present and did not witness the tragic events of 30 January 1892, were given a brief and limited view into the love and friendship which bound a group of friends for time and eternity.",
+  "The spirits of these women and girls never returned to the dam. There was no one else they were waiting for.",
+];
+
+type StoryId = "children" | "friends";
+
+const stories = {
+  children: { number: 1, title: "Children At Play", wordCount: "1,136", teaser, image: childrenImage, paragraphs: storyParagraphs },
+  friends: { number: 2, title: "Friends United", wordCount: "1,550", teaser: friendsTeaser, image: friendsPortrait.url, paragraphs: friendsParagraphs },
+} as const;
+
 function Index() {
-  const [storyOpen, setStoryOpen] = useState(false);
-  const [unlocked, setUnlocked] = useState(false);
+  const [activeStory, setActiveStory] = useState<StoryId | null>(null);
+  const [unlockedStories, setUnlockedStories] = useState<StoryId[]>([]);
   const [submission, setSubmission] = useState({ name: "", email: "", title: "", story: "" });
   const [permissions, setPermissions] = useState([false, false, false]);
   const [submitted, setSubmitted] = useState(false);
@@ -78,67 +118,78 @@ function Index() {
     && permissions.every(Boolean);
 
   useEffect(() => {
-    setUnlocked(window.localStorage.getItem(UNLOCK_KEY) === "true");
+    setUnlockedStories((Object.keys(stories) as StoryId[]).filter((id) => window.localStorage.getItem(`dg_${id}_unlocked`) === "true"));
   }, []);
 
-  function openStory() {
-    setStoryOpen(true);
+  function openStory(id: StoryId) {
+    setActiveStory(id);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   function closeStory() {
-    setStoryOpen(false);
+    setActiveStory(null);
     window.setTimeout(() => document.querySelector("#stories")?.scrollIntoView({ behavior: "smooth" }), 0);
   }
 
-  function unlockStory() {
+  function unlockStory(id: StoryId) {
     // TODO: Replace this confirmation with Paystack or Yoco checkout.
     if (window.confirm(`Simulate secure payment of ${CURRENCY}${PRICE} and unlock this story?`)) {
-      window.localStorage.setItem(UNLOCK_KEY, "true");
-      setUnlocked(true);
+      window.localStorage.setItem(`dg_${id}_unlocked`, "true");
+      setUnlockedStories((current) => current.includes(id) ? current : [...current, id]);
     }
   }
 
   function submitStory(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!submissionReady) return;
+    const subject = encodeURIComponent(`Ghost story for editing: ${submission.title}`);
+    const body = encodeURIComponent(`Name: ${submission.name}\nEmail: ${submission.email}\n\n${submission.story}`);
+    window.location.href = `mailto:kagisomaditsi20@gmail.com?subject=${subject}&body=${body}`;
     setSubmitted(true);
   }
+
+  const currentStory = activeStory ? stories[activeStory] : null;
+  const currentUnlocked = activeStory ? unlockedStories.includes(activeStory) : false;
 
   return (
     <main className="min-h-screen overflow-x-hidden bg-background text-foreground">
       <header className="sticky top-0 z-50 border-b border-border/80 bg-background/95 backdrop-blur-md">
         <div className="mx-auto flex min-h-16 max-w-6xl items-center justify-between gap-4 px-5 lg:px-8">
-          <button type="button" className="font-display text-lg font-semibold uppercase tracking-[0.09em] text-foreground sm:text-xl" onClick={() => { setStoryOpen(false); window.scrollTo({ top: 0, behavior: "smooth" }); }}>
+          <button type="button" className="font-display text-lg font-semibold uppercase tracking-[0.09em] text-foreground sm:text-xl" onClick={() => { setActiveStory(null); window.scrollTo({ top: 0, behavior: "smooth" }); }}>
             Dullstroom Ghosts
           </button>
           <nav aria-label="Main navigation" className="flex items-center justify-center gap-3 sm:gap-7">
-            <a href="#home" onClick={() => setStoryOpen(false)} className="nav-link">Home</a>
-            <a href="#foreword" onClick={() => setStoryOpen(false)} className="nav-link">Foreword</a>
-             <a href="#stories" onClick={() => setStoryOpen(false)} className="nav-link">Read the hauntings</a>
-             <a href="#submit-story" onClick={() => setStoryOpen(false)} className="nav-link">Submit</a>
+            <a href="#home" onClick={() => setActiveStory(null)} className="nav-link">Home</a>
+            <a href="#introduction" onClick={() => setActiveStory(null)} className="nav-link">Introduction</a>
+            <a href="#stories" onClick={() => setActiveStory(null)} className="nav-link">Stories</a>
+            <a href="#events" onClick={() => setActiveStory(null)} className="nav-link">Upcoming Events</a>
+            <a href="#your-story" onClick={() => setActiveStory(null)} className="nav-link">Your Story</a>
+            <a href="#payment" onClick={() => setActiveStory(null)} className="nav-link">Payment</a>
           </nav>
         </div>
       </header>
 
-      {!storyOpen ? (
+      {!activeStory ? (
         <div id="home">
           <section className="hero-section relative isolate flex min-h-[70vh] items-center justify-center overflow-hidden px-5 py-20 text-center">
              <img src={heroBanner.url} alt="A misty old Dullstroom street at dusk" width={968} height={414} className="absolute inset-0 -z-20 h-full w-full object-cover object-top" />
-            <div className="hero-overlay absolute inset-0 -z-10" />
-             <div className="hero-copy mx-auto flex w-full max-w-5xl flex-col items-center">
-               <h1 className="font-display text-5xl font-bold leading-none text-hero sm:text-7xl">Dullstroom Ghosts</h1>
-               <p className="mt-7 font-display text-2xl italic leading-snug text-hero">Every town has secrets. Dullstroom has ghosts.</p>
-               <a href="#stories" className="mt-8 inline-flex min-h-11 items-center justify-center border border-hero/70 bg-background/90 px-5 py-3 text-xs font-semibold uppercase text-foreground transition-colors hover:bg-background">Read the hauntings</a>
-               <p className="hero-strap mt-10 text-base font-medium leading-6 text-hero">True stories about the real ghosts of Dullstroom</p>
+             <div className="hero-overlay absolute inset-0 -z-10" />
+              <div className="hero-copy mx-auto flex min-h-[calc(70vh-10rem)] w-full max-w-5xl flex-col items-center">
+                <h1 className="sr-only">Dullstroom Ghosts</h1>
+                <p className="font-display text-2xl font-semibold text-hero sm:text-3xl">Dullstroom Ghosts</p>
+                <p className="mt-3 font-display text-[1.7rem] italic leading-snug text-hero sm:text-[2rem]">Every town has secrets. Dullstroom has ghosts.</p>
+                <div className="mt-auto flex flex-col items-center pt-8">
+                  <p className="text-base font-medium leading-6 text-hero">True stories about the real ghosts of Dullstroom</p>
+                  <a href="#stories" className="mt-5 inline-flex min-h-11 items-center justify-center border border-hero/70 bg-background/90 px-5 py-3 text-xs font-semibold uppercase text-foreground transition-colors hover:bg-background">Read the Hauntings</a>
+                </div>
             </div>
           </section>
 
-           <section id="foreword" className="scroll-mt-16 bg-background px-5 py-20 sm:py-28">
+            <section id="introduction" className="scroll-mt-16 bg-background px-5 py-20 sm:py-28">
             <article className="paper-panel mx-auto max-w-[840px] p-7 sm:p-12">
               <div className="border border-border px-5 py-8 sm:px-10 sm:py-11">
-                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-muted-foreground">Permanent Foreword</p>
-                <h2 className="mt-3 font-display text-[2.625rem] font-medium leading-none text-foreground">Foreword</h2>
+                 <p className="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-muted-foreground">Introduction</p>
+                 <h2 className="mt-3 font-display text-[2.625rem] font-medium leading-none text-foreground">Introduction</h2>
                 <div className="mt-8 font-display text-[1.1875rem] leading-[1.75] text-reading">
                   {forewordParagraphs.map((paragraph) => <p key={paragraph} className="mb-4 last:mb-0">{paragraph}</p>)}
                 </div>
@@ -147,38 +198,53 @@ function Index() {
           </section>
 
            <section aria-label="Advertisement" className="border-y border-border bg-card px-5 py-8">
-             <div id="ad-top" className="ad-slot ad-top mx-auto" role="complementary"><span>Advertisement</span></div>
+             <div id="ad-top" className="ad-slot ad-top mx-auto" role="complementary"><span>Advertisement · 728 × 90</span></div>
            </section>
 
           <section id="stories" className="scroll-mt-16 px-5 py-20 sm:py-28">
             <div className="mx-auto max-w-[840px]">
               <div className="mb-10 border-b border-border pb-5">
-                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-muted-foreground">The archive</p>
                 <h2 className="mt-2 font-display text-5xl font-medium leading-none text-foreground">Stories</h2>
               </div>
-              <article className="story-card border border-border bg-card p-6 sm:p-10">
-                <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Story 1</p>
-                <h3 className="mt-3 font-display text-3xl font-medium text-foreground">Children At Play</h3>
-                <blockquote className="mt-6 border-l-[3px] border-accent bg-teaser px-4 py-3.5 font-display text-lg italic leading-relaxed text-reading">“{teaser}”</blockquote>
-                <Button className="mt-7 w-full sm:w-auto" onClick={openStory}>
-                  Unlock full story for {CURRENCY}{PRICE}<ArrowRight className="h-4 w-4" aria-hidden="true" />
-                </Button>
-              </article>
+               <div className="grid gap-7 md:grid-cols-2">
+                 {(Object.entries(stories) as [StoryId, typeof stories[StoryId]][]).map(([id, story]) => (
+                   <article key={id} className="story-card flex flex-col overflow-hidden border border-border bg-card">
+                     <img src={story.image} alt={story.title === "Friends United" ? "Historic portrait of a young Dullstroom woman" : "Children in the mist"} className="aspect-[16/10] w-full object-cover object-top" />
+                     <div className="flex flex-1 flex-col p-6 sm:p-8">
+                       <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Story {story.number}</p>
+                       <h3 className="mt-3 font-display text-3xl font-medium text-foreground">{story.title} ({story.wordCount} words)</h3>
+                       <blockquote className="mt-5 border-l-[3px] border-accent bg-teaser px-4 py-3.5 font-display text-lg italic leading-relaxed text-reading">“{story.teaser}”</blockquote>
+                       <Button className="mt-7 w-full sm:w-auto" onClick={() => openStory(id)}>
+                         Read story<ArrowRight className="h-4 w-4" aria-hidden="true" />
+                       </Button>
+                     </div>
+                   </article>
+                 ))}
+               </div>
+               <p className="mt-6 text-center text-xs text-muted-foreground">Story price shown as {CURRENCY}{PRICE} for review; final pricing to be confirmed.</p>
             </div>
           </section>
 
-           <section aria-labelledby="event-title" className="border-y border-border bg-footer px-5 py-16 sm:py-20">
-             <article className="mx-auto max-w-[840px] border border-border bg-card p-7 text-center sm:p-10">
-               <p className="text-[0.6875rem] font-semibold uppercase text-muted-foreground">Upcoming event</p>
-               <h2 id="event-title" className="mt-3 font-display text-4xl font-semibold text-foreground">Dullstroom Ghost Walk</h2>
-               <p className="mt-3 font-display text-xl italic text-reading">Next Date TBA</p>
-             </article>
+            <section id="events" aria-labelledby="event-title" className="scroll-mt-16 border-y border-border bg-footer px-5 py-16 sm:py-20">
+              <div className="mx-auto max-w-5xl">
+                <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">What’s on in Dullstroom</p>
+                <h2 id="event-title" className="mt-2 font-display text-5xl font-medium text-foreground">Upcoming Events</h2>
+                <article className="mt-9 grid gap-8 border border-border bg-card p-5 sm:grid-cols-[minmax(0,440px)_1fr] sm:p-8">
+                  <img src={marketPoster.url} alt="Dullstroom Village Market Hello Spring, 3 and 4 October 2026" className="w-full border border-border object-cover" />
+                  <div className="self-center">
+                    <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Featured event</p>
+                    <h3 className="mt-3 font-display text-4xl font-semibold text-foreground">Dullstroom Village Market</h3>
+                    <p className="mt-4 font-display text-xl italic text-reading">Hello Spring · 3 &amp; 4 October 2026 · Verlorenkloof</p>
+                  </div>
+                </article>
+              </div>
            </section>
 
-           <section id="submit-story" className="scroll-mt-16 border-t border-border bg-card px-5 py-20 sm:py-28">
-             <div className="mx-auto max-w-[840px]">
+            <section id="your-story" className="scroll-mt-16 border-t border-border bg-card px-5 py-20 sm:py-28">
+             <div className="mx-auto max-w-6xl">
                <p className="text-[0.6875rem] font-semibold uppercase text-muted-foreground">Community archive</p>
-               <h2 className="mt-2 font-display text-5xl font-medium leading-none text-foreground">Submit Your Ghost Story</h2>
+                <h2 className="mt-2 font-display text-5xl font-medium leading-none text-foreground">Your Story</h2>
+                <p className="mt-5 max-w-2xl font-display text-xl leading-relaxed text-reading">Send your account to our editor for review. Stories are edited first and are never published automatically.</p>
                {submitted ? (
                  <div role="status" className="mt-10 border border-primary bg-background p-8 text-center font-display text-2xl text-reading">Thank you, your story has been received for review.</div>
                ) : (
@@ -205,50 +271,52 @@ function Index() {
                        </label>
                      ))}
                    </fieldset>
-                   <Button type="submit" disabled={!submissionReady} className="w-full sm:w-auto sm:justify-self-start">Submit story</Button>
+                    <Button type="submit" disabled={!submissionReady} className="w-full sm:w-auto sm:justify-self-start"><Mail className="h-4 w-4" aria-hidden="true" />Email story for editing</Button>
                  </form>
                )}
+                <div id="payment" className="scroll-mt-24 mt-12 border border-border bg-background p-7 sm:p-9">
+                  <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Payment</p>
+                  <h3 className="mt-3 font-display text-3xl font-semibold text-foreground">Editing &amp; hosting fee</h3>
+                  <p className="mt-3 text-sm leading-6 text-muted-foreground">Pay after your story has been reviewed and accepted. The {CURRENCY}{EDITING_HOSTING_FEE} amount is a placeholder pending final prices.</p>
+                  <Button type="button" className="mt-6" onClick={() => window.alert("Payment setup will be connected after final pricing is confirmed.")}><CreditCard className="h-4 w-4" aria-hidden="true" />Pay editing &amp; hosting fee</Button>
+                </div>
              </div>
            </section>
 
           <SiteFooter />
         </div>
       ) : (
-        <article id="story-page" className="mx-auto max-w-[840px] px-5 py-12 sm:py-20">
+        currentStory && <article id="story-page" className="mx-auto max-w-[840px] px-5 py-12 sm:py-20">
           <button type="button" onClick={closeStory} className="inline-flex min-h-11 items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground transition-colors hover:text-primary">
             <ArrowLeft className="h-4 w-4" aria-hidden="true" /> Back to Stories
           </button>
-          <p className="mt-10 text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Story 1</p>
-          <h1 className="mt-3 font-display text-[3.25rem] font-medium leading-none text-foreground">Children At Play</h1>
+          <p className="mt-10 text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Story {currentStory.number}</p>
+          <h1 className="mt-3 font-display text-[3.25rem] font-medium leading-none text-foreground">{currentStory.title} ({currentStory.wordCount} words)</h1>
           <div className="teaser-full mt-10 border border-teaser-border bg-teaser-full p-[22px] font-display text-xl leading-[1.7] text-reading">
-            {fullTeaser.map((paragraph, index) => (
-              <p key={paragraph} className="mb-4 last:mb-0">
-                {index === 0 ? '"' : ""}{paragraph}{index === fullTeaser.length - 1 ? '"' : ""}
-              </p>
-            ))}
+            <p>“{activeStory === "children" ? fullTeaser.join(" ") : friendsTeaser}”</p>
           </div>
 
-          {!unlocked ? (
+          {!currentUnlocked ? (
             <div id="paywallBox" className="mt-8 border border-foreground bg-card p-6 text-center sm:p-8">
               <p className="font-display text-xl leading-relaxed text-reading">This is a true historical account. Unlock complete story with original photographs.</p>
-              <Button id="unlockBtn" className="mt-6 w-full sm:w-auto" onClick={unlockStory}>Unlock full story for {CURRENCY}{PRICE}</Button>
+              <Button id="unlockBtn" className="mt-6 w-full sm:w-auto" onClick={() => activeStory && unlockStory(activeStory)}>Unlock full story for {CURRENCY}{PRICE}</Button>
               <p className="mt-4 text-[0.625rem] font-semibold uppercase tracking-[0.2em] text-muted-foreground">Secure payment</p>
             </div>
           ) : (
             <div id="lockedContent" className="mt-12">
               <div className="story-body font-display text-xl leading-[1.85] text-reading">
-                {storyParagraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+                {currentStory.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
               </div>
-              <div className="mt-14 grid gap-8 sm:grid-cols-2">
+              {activeStory === "children" ? <div className="mt-14 grid gap-8 sm:grid-cols-2">
                 <ArchiveFigure caption="Die Hervormde Kerk van Afrika, Dullstroom. Inauguration 1895." label="1895 church photograph" />
                 <ArchiveFigure caption="The church sometime after 18 April 1901." label="Church after April 1901 photograph" />
-              </div>
+              </div> : <figure className="mt-14 border border-border bg-card p-3"><img src={friendsPortrait.url} alt="Historic portrait accompanying Friends United" className="w-full sepia-[0.15]" /><figcaption className="px-2 pb-1 pt-3 text-center font-display text-sm italic text-caption">Historical photograph supplied with “Friends United”.</figcaption></figure>}
             </div>
           )}
         </article>
       )}
 
-      {storyOpen && <SiteFooter />}
+      {activeStory && <SiteFooter />}
     </main>
   );
 }
@@ -280,7 +348,7 @@ function SiteFooter() {
     <footer className="border-t border-border bg-footer px-5 py-10">
       <div className="mx-auto grid max-w-6xl items-start gap-8 sm:grid-cols-[1fr_300px]">
         <p className="pt-2 text-xs text-muted-foreground">© 2026 Dullstroom Ghosts <span aria-hidden="true">•</span> True stories, respectfully told.</p>
-        <div id="ad-sidebar" className="ad-slot ad-sidebar sticky top-24" role="complementary" aria-label="Advertisement"><span>Advertisement</span></div>
+        <div id="ad-sidebar" className="ad-slot ad-sidebar sticky top-24" role="complementary" aria-label="Advertisement"><span>Advertisement · 300 × 250</span></div>
       </div>
     </footer>
   );
