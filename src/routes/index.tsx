@@ -6,6 +6,7 @@ import { Button } from "../components/Button";
 import heroBanner from "../assets/dullstroom-ghosts-hero.jpg.asset.json";
 import marketPoster from "../assets/dullstroom-village-market.jpg.asset.json";
 import friendsPortrait from "../assets/friends-united-portrait.png.asset.json";
+import heritageSociety from "../assets/dullstroom-heritage-society.jpg.asset.json";
 import childrenImage from "../assets/child-in-mist.jpg";
 
 export const Route = createFileRoute("/")({
@@ -198,7 +199,13 @@ function Index() {
           </section>
 
            <section aria-label="Advertisement" className="border-y border-border bg-card px-5 py-8">
-             <div id="ad-top" className="ad-slot ad-top mx-auto" role="complementary"><span>Advertisement · 728 × 90</span></div>
+             <div className="mx-auto grid max-w-5xl gap-7 lg:grid-cols-[minmax(0,1fr)_300px]">
+               <div id="ad-top" className="ad-slot ad-top" role="complementary"><span>Advertisement · 728 × 90</span></div>
+               <a href="https://dullstroomheritagemuseum.co.za/" target="_blank" rel="noreferrer sponsored" className="group border border-border bg-hero p-3 text-center" aria-label="Visit the Dullstroom Heritage Society website">
+                 <span className="mb-2 block text-[0.625rem] font-semibold uppercase tracking-[0.14em] text-background">Sponsored advertisement</span>
+                 <img src={heritageSociety.url} alt="Dullstroom Heritage Society" className="mx-auto h-28 w-28 object-contain transition-transform group-hover:scale-[1.03]" />
+               </a>
+             </div>
            </section>
 
           <section id="stories" className="scroll-mt-16 px-5 py-20 sm:py-28">
@@ -279,6 +286,16 @@ function Index() {
                   <h3 className="mt-3 font-display text-3xl font-semibold text-foreground">Editing &amp; hosting fee</h3>
                   <p className="mt-3 text-sm leading-6 text-muted-foreground">Pay after your story has been reviewed and accepted. The {CURRENCY}{EDITING_HOSTING_FEE} amount is a placeholder pending final prices.</p>
                   <Button type="button" className="mt-6" onClick={() => window.alert("Payment setup will be connected after final pricing is confirmed.")}><CreditCard className="h-4 w-4" aria-hidden="true" />Pay editing &amp; hosting fee</Button>
+                  <div className="mt-8 border-t border-border pt-7">
+                    <h4 className="font-display text-2xl font-semibold text-foreground">Bank transfer</h4>
+                    <dl className="mt-5 grid gap-x-8 gap-y-3 text-sm sm:grid-cols-[150px_1fr]">
+                      <dt className="text-muted-foreground">Account name</dt><dd className="font-medium text-foreground">Munro Deysel</dd>
+                      <dt className="text-muted-foreground">Bank</dt><dd className="font-medium text-foreground">Standard Bank</dd>
+                      <dt className="text-muted-foreground">Account type</dt><dd className="font-medium text-foreground">Savings</dd>
+                      <dt className="text-muted-foreground">Account number</dt><dd className="font-medium text-foreground">358828600</dd>
+                      <dt className="text-muted-foreground">Branch code</dt><dd className="font-medium text-foreground">051001</dd>
+                    </dl>
+                  </div>
                 </div>
              </div>
            </section>
