@@ -8,3 +8,6 @@
 - [x] Verify the revised desktop/mobile presentation and submission flow
 - [ ] Apply the document-sourced Story 2, dark visual revision, events, ads, and editorial payment flow
 - [ ] Verify the full revision at desktop and mobile sizes
+- [ ] Export a high-resolution clean hero banner without button text
+- [ ] Add the Heritage Society logo as a clickable sponsored advertisement
+- [ ] Add the supplied bank details to the Payments section
