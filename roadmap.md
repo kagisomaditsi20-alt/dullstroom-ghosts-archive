@@ -6,8 +6,8 @@
 - [x] Verify desktop and mobile presentation, navigation, and unlock flow
 - [x] Add the supplied hero banner, revised section order, advertisements, event, and story submission form
 - [x] Verify the revised desktop/mobile presentation and submission flow
-- [ ] Apply the document-sourced Story 2, dark visual revision, events, ads, and editorial payment flow
-- [ ] Verify the full revision at desktop and mobile sizes
-- [ ] Export a high-resolution clean hero banner without button text
-- [ ] Add the Heritage Society logo as a clickable sponsored advertisement
-- [ ] Add the supplied bank details to the Payments section
+- [x] Apply the document-sourced Story 2, dark visual revision, events, ads, and editorial payment flow
+- [x] Verify the full revision at desktop and mobile sizes
+- [x] Export a high-resolution clean hero banner without button text
+- [x] Add the Heritage Society logo as a clickable sponsored advertisement
+- [x] Add the supplied bank details to the Payments section
