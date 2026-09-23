@@ -3,7 +3,7 @@ import { ArrowLeft, ArrowRight, CreditCard, Image as ImageIcon, Mail, X } from "
 import { type FormEvent, useEffect, useState } from "react";
 
 import { Button } from "../components/Button";
-import heroBanner from "../assets/dullstroom-ghosts-hero.jpg.asset.json";
+import heroBanner from "../assets/dullstroom-ghosts-hero-revised.jpg";
 import marketPoster from "../assets/dullstroom-village-market.jpg.asset.json";
 import friendsPortrait from "../assets/friends-united-portrait.png.asset.json";
 import heritageSociety from "../assets/dullstroom-heritage-society.jpg.asset.json";
@@ -176,7 +176,7 @@ function Index() {
             <a href="#introduction" onClick={() => setActiveStory(null)} className="nav-link">Introduction</a>
             <a href="#stories" onClick={() => setActiveStory(null)} className="nav-link">Stories</a>
             <a href="#events" onClick={() => setActiveStory(null)} className="nav-link">Upcoming Events</a>
-            <a href="#your-story" onClick={() => setActiveStory(null)} className="nav-link">Your Story</a>
+            <a href="#your-story" onClick={() => setActiveStory(null)} className="nav-link">Your Ghost Story</a>
             <a href="#payment" onClick={() => setActiveStory(null)} className="nav-link">Payment</a>
           </nav>
         </div>
@@ -185,7 +185,7 @@ function Index() {
       {!activeStory ? (
         <div id="home">
           <section className="hero-section relative isolate flex min-h-[70vh] items-center justify-center overflow-hidden px-5 py-20 text-center">
-             <img src={heroBanner.url} alt="A misty old Dullstroom street at dusk" width={968} height={414} className="absolute inset-0 -z-20 h-full w-full object-cover object-top" />
+             <img src={heroBanner} alt="Dullstroom Ghosts above a misty old Dullstroom street at dusk" width={1920} height={821} className="absolute inset-0 -z-20 h-full w-full object-cover object-top" />
              <div className="hero-overlay absolute inset-0 -z-10" />
               <div className="hero-copy mx-auto flex min-h-[calc(70vh-10rem)] w-full max-w-5xl flex-col items-center">
                 <h1 className="sr-only">Dullstroom Ghosts</h1>
