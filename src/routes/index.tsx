@@ -1,13 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ArrowLeft, ArrowRight, CreditCard, Image as ImageIcon, Mail } from "lucide-react";
+import { ArrowLeft, ArrowRight, CreditCard, Image as ImageIcon, Mail, X } from "lucide-react";
 import { type FormEvent, useEffect, useState } from "react";
 
 import { Button } from "../components/Button";
-import heroBanner from "../assets/dullstroom-ghosts-hero.jpg.asset.json";
+import heroBanner from "../assets/dullstroom-ghosts-hero-revised.jpg";
 import marketPoster from "../assets/dullstroom-village-market.jpg.asset.json";
 import friendsPortrait from "../assets/friends-united-portrait.png.asset.json";
 import heritageSociety from "../assets/dullstroom-heritage-society.jpg.asset.json";
-import childrenImage from "../assets/child-in-mist.jpg";
+import church1895 from "../assets/hervormde-kerk-1895.jpg.asset.json";
+import bubblyMeander from "../assets/dullstroom-bubbly-meander-2026.jpg.asset.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -29,12 +30,12 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-const PRICE = 49;
+const PRICE = 29;
 const CURRENCY = "R";
-const EDITING_HOSTING_FEE = 49;
+const EDITING_HOSTING_FEE = 29;
 
 const forewordParagraphs = [
-  'These are not "ghost stories." These are true stories about the real ghosts of Dullstroom. They have been written to be read aloud by someone to another person or to others.',
+  'These are not "ghost stories." These are true stories about the real ghosts of Dullstroom.',
   "All the names, places, buildings, streets, dates, and history are actual, factual, and historically correct. Where possible, I have included photos to prove the history, reality, and actuality of all these things. For those still in doubt, please come visit Dullstroom and go see things for yourself.",
   'The ghosts of Dullstroom are in no way dangerous, harmful, or belligerent towards people. They simply exist in their realm whilst we, the so-called "living," exist in ours. So, if you are fortunate enough to see or experience any of them, simply observe them, respect them, and let them be. They all deserve their peace. Many of them suffered greatly whilst they were where we are now.',
   "Pray for the souls of all those who have gone before us. May the Lord make His face to shine upon them.",
@@ -102,7 +103,7 @@ const friendsParagraphs = [
 type StoryId = "children" | "friends";
 
 const stories = {
-  children: { number: 1, title: "Children At Play", wordCount: "1,136", teaser, image: childrenImage, paragraphs: storyParagraphs },
+  children: { number: 1, title: "Children At Play", wordCount: "1,136", teaser, image: church1895.url, paragraphs: storyParagraphs },
   friends: { number: 2, title: "Friends United", wordCount: "1,550", teaser: friendsTeaser, image: friendsPortrait.url, paragraphs: friendsParagraphs },
 } as const;
 
@@ -112,6 +113,10 @@ function Index() {
   const [submission, setSubmission] = useState({ name: "", email: "", title: "", story: "" });
   const [permissions, setPermissions] = useState([false, false, false]);
   const [submitted, setSubmitted] = useState(false);
+  const [unlockingStory, setUnlockingStory] = useState<StoryId | null>(null);
+  const [proofEmail, setProofEmail] = useState("");
+  const [proofFile, setProofFile] = useState<File | null>(null);
+  const [proofReceived, setProofReceived] = useState(false);
   const wordCount = submission.story.trim() ? submission.story.trim().split(/\s+/).length : 0;
   const submissionReady = Object.values(submission).every((value) => value.trim().length > 0)
     && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(submission.email)
@@ -132,12 +137,19 @@ function Index() {
     window.setTimeout(() => document.querySelector("#stories")?.scrollIntoView({ behavior: "smooth" }), 0);
   }
 
-  function unlockStory(id: StoryId) {
-    // TODO: Replace this confirmation with Paystack or Yoco checkout.
-    if (window.confirm(`Simulate secure payment of ${CURRENCY}${PRICE} and unlock this story?`)) {
-      window.localStorage.setItem(`dg_${id}_unlocked`, "true");
-      setUnlockedStories((current) => current.includes(id) ? current : [...current, id]);
-    }
+  function openUnlock(id: StoryId) {
+    setUnlockingStory(id);
+    setProofEmail("");
+    setProofFile(null);
+    setProofReceived(false);
+  }
+
+  function submitProof(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!unlockingStory || !proofEmail || !proofFile) return;
+    window.localStorage.setItem(`dg_${unlockingStory}_unlocked`, "true");
+    setUnlockedStories((current) => current.includes(unlockingStory) ? current : [...current, unlockingStory]);
+    setProofReceived(true);
   }
 
   function submitStory(event: FormEvent<HTMLFormElement>) {
@@ -164,7 +176,7 @@ function Index() {
             <a href="#introduction" onClick={() => setActiveStory(null)} className="nav-link">Introduction</a>
             <a href="#stories" onClick={() => setActiveStory(null)} className="nav-link">Stories</a>
             <a href="#events" onClick={() => setActiveStory(null)} className="nav-link">Upcoming Events</a>
-            <a href="#your-story" onClick={() => setActiveStory(null)} className="nav-link">Your Story</a>
+            <a href="#your-story" onClick={() => setActiveStory(null)} className="nav-link">Your Ghost Story</a>
             <a href="#payment" onClick={() => setActiveStory(null)} className="nav-link">Payment</a>
           </nav>
         </div>
@@ -173,15 +185,13 @@ function Index() {
       {!activeStory ? (
         <div id="home">
           <section className="hero-section relative isolate flex min-h-[70vh] items-center justify-center overflow-hidden px-5 py-20 text-center">
-             <img src={heroBanner.url} alt="A misty old Dullstroom street at dusk" width={968} height={414} className="absolute inset-0 -z-20 h-full w-full object-cover object-top" />
+             <img src={heroBanner} alt="Dullstroom Ghosts above a misty old Dullstroom street at dusk" width={1920} height={821} className="absolute inset-0 -z-20 h-full w-full object-cover object-top" />
              <div className="hero-overlay absolute inset-0 -z-10" />
               <div className="hero-copy mx-auto flex min-h-[calc(70vh-10rem)] w-full max-w-5xl flex-col items-center">
                 <h1 className="sr-only">Dullstroom Ghosts</h1>
-                <p className="font-display text-2xl font-semibold text-hero sm:text-3xl">Dullstroom Ghosts</p>
-                <p className="mt-3 font-display text-[1.7rem] italic leading-snug text-hero sm:text-[2rem]">Every town has secrets. Dullstroom has ghosts.</p>
-                <div className="mt-auto flex flex-col items-center pt-8">
-                  <p className="text-base font-medium leading-6 text-hero">True stories about the real ghosts of Dullstroom</p>
-                  <a href="#stories" className="mt-5 inline-flex min-h-11 items-center justify-center border border-hero/70 bg-background/90 px-5 py-3 text-xs font-semibold uppercase text-foreground transition-colors hover:bg-background">Read the Hauntings</a>
+                 <p className="hero-tagline font-display text-[1.7rem] italic leading-snug text-hero sm:text-[2rem]">Every town has secrets. Dullstroom has ghosts.</p>
+                 <div className="mt-auto flex flex-col items-center pt-8">
+                   <a href="#stories" className="inline-flex min-h-11 items-center justify-center border border-hero/70 bg-background/90 px-5 py-3 text-xs font-semibold uppercase text-foreground transition-colors hover:bg-background">Read the Hauntings</a>
                 </div>
             </div>
           </section>
@@ -189,8 +199,7 @@ function Index() {
             <section id="introduction" className="scroll-mt-16 bg-background px-5 py-20 sm:py-28">
             <article className="paper-panel mx-auto max-w-[840px] p-7 sm:p-12">
               <div className="border border-border px-5 py-8 sm:px-10 sm:py-11">
-                 <p className="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-muted-foreground">Introduction</p>
-                 <h2 className="mt-3 font-display text-[2.625rem] font-medium leading-none text-foreground">Introduction</h2>
+                  <h2 className="font-display text-[2.625rem] font-medium leading-none text-foreground">Introduction</h2>
                 <div className="mt-8 font-display text-[1.1875rem] leading-[1.75] text-reading">
                   {forewordParagraphs.map((paragraph) => <p key={paragraph} className="mb-4 last:mb-0">{paragraph}</p>)}
                 </div>
@@ -198,13 +207,17 @@ function Index() {
             </article>
           </section>
 
-           <section aria-label="Advertisement" className="border-y border-border bg-card px-5 py-8">
-             <div className="mx-auto grid max-w-5xl gap-7 lg:grid-cols-[minmax(0,1fr)_300px]">
-               <div id="ad-top" className="ad-slot ad-top" role="complementary"><span>Advertisement · 728 × 90</span></div>
-               <a href="https://dullstroomheritagemuseum.co.za/" target="_blank" rel="noreferrer sponsored" className="group border border-border bg-hero p-3 text-center" aria-label="Visit the Dullstroom Heritage Society website">
-                 <span className="mb-2 block text-[0.625rem] font-semibold uppercase tracking-[0.14em] text-background">Sponsored advertisement</span>
-                 <img src={heritageSociety.url} alt="Dullstroom Heritage Society" className="mx-auto h-28 w-28 object-contain transition-transform group-hover:scale-[1.03]" />
-               </a>
+            <section aria-labelledby="sponsored-title" className="border-y border-border bg-card px-5 py-12">
+              <div className="mx-auto max-w-5xl">
+                <h2 id="sponsored-title" className="mb-5 text-center text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Sponsored advertisement</h2>
+                <div className="grid gap-7 sm:grid-cols-2">
+                  <a href="https://dullstroomheritagemuseum.co.za/" target="_blank" rel="noreferrer sponsored" className="group flex min-h-72 items-center justify-center border border-border bg-hero p-5" aria-label="Visit the Dullstroom Heritage Society website">
+                    <img src={heritageSociety.url} alt="Dullstroom Heritage Society" className="max-h-64 w-full object-contain transition-transform group-hover:scale-[1.02]" />
+                  </a>
+                  <article className="flex min-h-72 items-center justify-center border border-border bg-hero p-5">
+                    <img src={marketPoster.url} alt="Dullstroom Village Market Hello Spring, 3 and 4 October 2026" className="max-h-64 w-full object-contain" />
+                  </article>
+                </div>
              </div>
            </section>
 
@@ -216,7 +229,7 @@ function Index() {
                <div className="grid gap-7 md:grid-cols-2">
                  {(Object.entries(stories) as [StoryId, typeof stories[StoryId]][]).map(([id, story]) => (
                    <article key={id} className="story-card flex flex-col overflow-hidden border border-border bg-card">
-                     <img src={story.image} alt={story.title === "Friends United" ? "Historic portrait of a young Dullstroom woman" : "Children in the mist"} className="aspect-[16/10] w-full object-cover object-top" />
+                      <img src={story.image} alt={story.title === "Friends United" ? "Historic portrait of a young Dullstroom woman" : "Die Hervormde Kerk van Afrika at its 1895 inauguration"} className="aspect-[16/10] w-full object-cover object-top" />
                      <div className="flex flex-1 flex-col p-6 sm:p-8">
                        <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Story {story.number}</p>
                        <h3 className="mt-3 font-display text-3xl font-medium text-foreground">{story.title} ({story.wordCount} words)</h3>
@@ -236,22 +249,33 @@ function Index() {
               <div className="mx-auto max-w-5xl">
                 <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">What’s on in Dullstroom</p>
                 <h2 id="event-title" className="mt-2 font-display text-5xl font-medium text-foreground">Upcoming Events</h2>
-                <article className="mt-9 grid gap-8 border border-border bg-card p-5 sm:grid-cols-[minmax(0,440px)_1fr] sm:p-8">
-                  <img src={marketPoster.url} alt="Dullstroom Village Market Hello Spring, 3 and 4 October 2026" className="w-full border border-border object-cover" />
-                  <div className="self-center">
-                    <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Featured event</p>
-                    <h3 className="mt-3 font-display text-4xl font-semibold text-foreground">Dullstroom Village Market</h3>
-                    <p className="mt-4 font-display text-xl italic text-reading">Hello Spring · 3 &amp; 4 October 2026 · Verlorenkloof</p>
-                  </div>
-                </article>
+                 <div className="mt-9 grid gap-8">
+                   <article className="grid gap-8 border border-border bg-card p-5 sm:grid-cols-[minmax(0,440px)_1fr] sm:p-8">
+                     <img src={marketPoster.url} alt="Dullstroom Village Market Hello Spring, 3 and 4 October 2026" className="w-full border border-border object-cover" />
+                     <div className="self-center">
+                       <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Featured event</p>
+                       <h3 className="mt-3 font-display text-4xl font-semibold text-foreground">Dullstroom Village Market</h3>
+                       <p className="mt-4 font-display text-xl italic text-reading">Hello Spring · 3 &amp; 4 October 2026 · Verlorenkloof</p>
+                     </div>
+                   </article>
+                   <article className="grid gap-8 border border-border bg-card p-5 sm:grid-cols-[minmax(0,440px)_1fr] sm:p-8">
+                     <img src={bubblyMeander.url} alt="Dullstroom Bubbly and Friends Meander flyer" className="w-full border border-border object-cover" />
+                     <div className="self-center">
+                       <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Featured event</p>
+                       <h3 className="mt-3 font-display text-4xl font-semibold text-foreground">Dullstroom Bubbly and Friends Meander</h3>
+                       <p className="mt-4 font-display text-xl italic text-reading">7 November 2026 · 10:00–17:00 · R180 per person</p>
+                       <p className="mt-3 text-sm text-muted-foreground">Starting point: The Duck &amp; Trout</p>
+                     </div>
+                   </article>
+                 </div>
               </div>
            </section>
 
             <section id="your-story" className="scroll-mt-16 border-t border-border bg-card px-5 py-20 sm:py-28">
              <div className="mx-auto max-w-6xl">
                <p className="text-[0.6875rem] font-semibold uppercase text-muted-foreground">Community archive</p>
-                <h2 className="mt-2 font-display text-5xl font-medium leading-none text-foreground">Your Story</h2>
-                <p className="mt-5 max-w-2xl font-display text-xl leading-relaxed text-reading">Send your account to our editor for review. Stories are edited first and are never published automatically.</p>
+                <h2 className="mt-2 font-display text-5xl font-medium leading-none text-foreground">Your Ghost Story</h2>
+                 <p className="mt-5 max-w-2xl font-display text-xl leading-relaxed text-reading">Send your story to our editor for review. Stories are edited first and are never published automatically.</p>
                {submitted ? (
                  <div role="status" className="mt-10 border border-primary bg-background p-8 text-center font-display text-2xl text-reading">Thank you, your story has been received for review.</div>
                ) : (
@@ -284,18 +308,8 @@ function Index() {
                 <div id="payment" className="scroll-mt-24 mt-12 border border-border bg-background p-7 sm:p-9">
                   <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Payment</p>
                   <h3 className="mt-3 font-display text-3xl font-semibold text-foreground">Editing &amp; hosting fee</h3>
-                  <p className="mt-3 text-sm leading-6 text-muted-foreground">Pay after your story has been reviewed and accepted. The {CURRENCY}{EDITING_HOSTING_FEE} amount is a placeholder pending final prices.</p>
-                  <Button type="button" className="mt-6" onClick={() => window.alert("Payment setup will be connected after final pricing is confirmed.")}><CreditCard className="h-4 w-4" aria-hidden="true" />Pay editing &amp; hosting fee</Button>
-                  <div className="mt-8 border-t border-border pt-7">
-                    <h4 className="font-display text-2xl font-semibold text-foreground">Bank transfer</h4>
-                    <dl className="mt-5 grid gap-x-8 gap-y-3 text-sm sm:grid-cols-[150px_1fr]">
-                      <dt className="text-muted-foreground">Account name</dt><dd className="font-medium text-foreground">Munro Deysel</dd>
-                      <dt className="text-muted-foreground">Bank</dt><dd className="font-medium text-foreground">Standard Bank</dd>
-                      <dt className="text-muted-foreground">Account type</dt><dd className="font-medium text-foreground">Savings</dd>
-                      <dt className="text-muted-foreground">Account number</dt><dd className="font-medium text-foreground">358828600</dd>
-                      <dt className="text-muted-foreground">Branch code</dt><dd className="font-medium text-foreground">051001</dd>
-                    </dl>
-                  </div>
+                   <p className="mt-3 text-sm leading-6 text-muted-foreground">Pay after your story has been reviewed and accepted.</p>
+                   <Button type="button" className="mt-6" onClick={() => window.alert(`Paystack payment of ${CURRENCY}${EDITING_HOSTING_FEE} will open here.`)}><CreditCard className="h-4 w-4" aria-hidden="true" />Paystack {CURRENCY}{EDITING_HOSTING_FEE}</Button>
                 </div>
              </div>
            </section>
@@ -316,7 +330,7 @@ function Index() {
           {!currentUnlocked ? (
             <div id="paywallBox" className="mt-8 border border-foreground bg-card p-6 text-center sm:p-8">
               <p className="font-display text-xl leading-relaxed text-reading">This is a true historical account. Unlock complete story with original photographs.</p>
-              <Button id="unlockBtn" className="mt-6 w-full sm:w-auto" onClick={() => activeStory && unlockStory(activeStory)}>Unlock full story for {CURRENCY}{PRICE}</Button>
+               <Button id="unlockBtn" className="mt-6 w-full sm:w-auto" onClick={() => activeStory && openUnlock(activeStory)}>Unlock Story - {CURRENCY}{PRICE}</Button>
               <p className="mt-4 text-[0.625rem] font-semibold uppercase tracking-[0.2em] text-muted-foreground">Secure payment</p>
             </div>
           ) : (
@@ -334,6 +348,42 @@ function Index() {
       )}
 
       {activeStory && <SiteFooter />}
+
+      {unlockingStory && (
+        <div className="fixed inset-0 z-[100] grid place-items-center bg-background/90 p-4" role="dialog" aria-modal="true" aria-labelledby="unlock-title">
+          <div className="relative max-h-[92vh] w-full max-w-lg overflow-y-auto border border-border bg-card p-6 shadow-2xl sm:p-8">
+            <Button type="button" variant="outline" aria-label="Close payment" className="absolute right-4 top-4 min-h-10 px-3 py-2" onClick={() => setUnlockingStory(null)}><X className="h-4 w-4" aria-hidden="true" /></Button>
+            <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Bank payment</p>
+            <h2 id="unlock-title" className="mt-2 pr-12 font-display text-4xl font-semibold text-foreground">Unlock Story - {CURRENCY}{PRICE}</h2>
+            {!proofReceived ? (
+              <form className="mt-7 grid gap-5" onSubmit={submitProof}>
+                <dl className="grid gap-x-6 gap-y-2 border-y border-border py-5 text-sm sm:grid-cols-[130px_1fr]">
+                  <dt className="text-muted-foreground">Bank</dt><dd>Standard Bank</dd>
+                  <dt className="text-muted-foreground">Account name</dt><dd>Munro Deysel</dd>
+                  <dt className="text-muted-foreground">Account type</dt><dd>Savings</dd>
+                  <dt className="text-muted-foreground">Account number</dt><dd>358828600</dd>
+                  <dt className="text-muted-foreground">Branch code</dt><dd>051001</dd>
+                  <dt className="text-muted-foreground">Amount</dt><dd>{CURRENCY}{PRICE}</dd>
+                  <dt className="text-muted-foreground">Reference</dt><dd>Email + Story</dd>
+                </dl>
+                <label className="grid gap-2 text-sm font-semibold" htmlFor="proof-email">Email
+                  <input id="proof-email" type="email" required value={proofEmail} onChange={(event) => setProofEmail(event.target.value)} className="form-control" />
+                </label>
+                <label className="grid gap-2 text-sm font-semibold" htmlFor="proof-file">Upload proof of payment
+                  <input id="proof-file" type="file" required accept="image/*,.pdf" onChange={(event) => setProofFile(event.target.files?.[0] ?? null)} className="form-control file:mr-3 file:border-0 file:bg-primary file:px-3 file:py-2 file:text-primary-foreground" />
+                </label>
+                <Button type="submit" disabled={!proofEmail || !proofFile} className="w-full">Submit proof</Button>
+              </form>
+            ) : (
+              <div className="mt-7 border border-primary p-6 text-center">
+                <p className="font-display text-2xl text-reading">Proof received!</p>
+                <p className="mt-3 text-sm leading-6 text-muted-foreground">Your story is unlocked on this device. Your email unlock link will follow after verification.</p>
+                <Button type="button" className="mt-6" onClick={() => setUnlockingStory(null)}>Read story</Button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </main>
   );
 }

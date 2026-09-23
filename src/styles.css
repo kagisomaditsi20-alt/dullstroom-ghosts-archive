@@ -75,7 +75,7 @@
   background: linear-gradient(rgb(0 0 0 / 0.1), rgb(0 0 0 / 0.3));
 }
 
-.hero-copy { padding-top: 8rem; transform: translateY(40px); }
+.hero-copy { padding-top: 14rem; }
 .hero-copy h1, .hero-copy > p { text-shadow: 0 2px 16px rgb(0 0 0 / 0.82); }
 .hero-strap { margin-top: auto; }
 
@@ -98,8 +98,9 @@
   header > div { flex-direction: column; padding-block: 0.65rem; }
   header nav { flex-wrap: wrap; row-gap: 0.45rem; }
   .nav-link { font-size: 0.6rem; letter-spacing: 0.03em; }
-  .hero-copy { padding-top: 6.5rem; transform: translateY(40px); }
+  .hero-copy { padding-top: 12rem; }
   .hero-copy h1 { font-size: 3rem; }
+  .hero-tagline { max-width: 18rem; font-size: 1.45rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -119,7 +120,6 @@
   text-transform: uppercase;
   background-image: repeating-linear-gradient(135deg, transparent 0, transparent 10px, rgb(245 245 220 / 0.035) 10px, rgb(245 245 220 / 0.035) 11px);
 }
-.ad-top { width: min(100%, 728px); aspect-ratio: 728 / 90; min-height: 70px; }
 .ad-sidebar { width: min(100%, 300px); aspect-ratio: 300 / 250; justify-self: center; }
 .form-control {
   width: 100%;
