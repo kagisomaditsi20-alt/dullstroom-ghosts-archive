@@ -11,5 +11,5 @@
 - [x] Export a high-resolution clean hero banner without button text
 - [x] Add the Heritage Society logo as a clickable sponsored advertisement
 - [x] Add the supplied bank details to the Payments section
-- [ ] Apply the 15 requested hero, introduction, advertising, story, payment, and event edits
-- [ ] Verify the revised payment popup and desktop/mobile presentation
+- [x] Apply the 15 requested hero, introduction, advertising, story, payment, and event edits
+- [x] Verify the revised payment popup and desktop/mobile presentation
