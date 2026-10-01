@@ -75,6 +75,7 @@
   background: linear-gradient(rgb(0 0 0 / 0.1), rgb(0 0 0 / 0.3));
 }
 
+.hero-section { min-height: clamp(24rem, 42.8vw, 40rem); }
 .hero-copy { padding-top: 14rem; }
 .hero-copy h1, .hero-copy > p { text-shadow: 0 2px 16px rgb(0 0 0 / 0.82); }
 .hero-strap { margin-top: auto; }

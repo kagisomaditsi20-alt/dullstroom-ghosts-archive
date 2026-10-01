@@ -184,10 +184,10 @@ function Index() {
 
       {!activeStory ? (
         <div id="home">
-          <section className="hero-section relative isolate flex min-h-[70vh] items-center justify-center overflow-hidden px-5 py-20 text-center">
+          <section className="hero-section relative isolate flex items-center justify-center overflow-hidden px-5 py-20 text-center">
              <img src={heroBanner} alt="Dullstroom Ghosts above a misty old Dullstroom street at dusk" width={1920} height={821} className="hero-image absolute inset-0 -z-20 h-full w-full object-cover object-top" />
              <div className="hero-overlay absolute inset-0 -z-10" />
-              <div className="hero-copy mx-auto flex min-h-[calc(70vh-10rem)] w-full max-w-5xl flex-col items-center">
+              <div className="hero-copy mx-auto flex w-full max-w-5xl flex-col items-center">
                 <h1 className="sr-only">Dullstroom Ghosts</h1>
                 <p className="hero-tagline font-display text-[1.7rem] italic leading-snug text-hero sm:text-[2rem]">Every town has secrets. Dullstroom has ghosts.</p>
               </div>
