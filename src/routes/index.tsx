@@ -383,8 +383,8 @@ function Index() {
             ) : (
               <div className="mt-7 border border-primary p-6 text-center">
                 <p className="font-display text-2xl text-reading">Proof received!</p>
-                <p className="mt-3 text-sm leading-6 text-muted-foreground">Your story is unlocked on this device. Your email unlock link will follow after verification.</p>
-                <Button type="button" className="mt-6" onClick={() => setUnlockingStory(null)}>Read story</Button>
+                <p className="mt-3 text-sm leading-6 text-muted-foreground">Thank you. The story stays locked until your payment is checked. Once it is confirmed, the story will be sent to your email.</p>
+                <Button type="button" className="mt-6" onClick={() => setUnlockingStory(null)}>Close</Button>
               </div>
             )}
           </div>
