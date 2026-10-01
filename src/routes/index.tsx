@@ -70,11 +70,11 @@ const storyParagraphs = [
   "On some Communion Service week-ends, if you sit on the veranda of the Dullstroom Inn, across the road from Oranje Square and the church, somewhere between sunset and early evening, and if you keep absolutely quiet amidst the cacophony of noises caused by people drinking and socialising, you can still hear, and if you are lucky, actually see the children at play on the square around the church. They play and play and run and run and laugh and laugh until they fade away, all their energy and exuberance spent, too exhausted to continue. They love to return every so often to re-live their happiest of times in their happiest of places. They are at peace here.",
 ];
 
-const friendsTeaser = "Wolterus Dull visited what is today the town of Dullstroom in 1880 as representative of De Nederlandsche Bank van Zuid Afrika. From there through various actions and events, the town was formed.";
+const friendsTeaser = "However, what was to be yet another day when family and friends delighted in each other's company, turned into a disaster for this small group of friends and a catastrophe for the community as a whole.";
 
 const friendsParagraphs = [
   'The name “Dullstroom” is a combination of the surname of Wolterus Dull and the word “stroom” (stream).',
-  friendsTeaser,
+  "Wolterus Dull visited what is today the town of Dullstroom in 1880 as representative of De Nederlandsche Bank van Zuid Afrika. From there through various actions and events, the town was formed.",
   "The stream refers to the upper reaches of the Krokodilrivier (Crocodile River) which has its origins in the hills above and to the north of the town. By the time it runs past the town to the east thereof, it is no more than a stream. However, as it goes on it becomes a river which later forms the southern border of the Kruger Wildtuin (Kruger National Park), runs through Mozambique, and empties out in the Indian Ocean.",
   "From the upper reaches of the river, town councils, farmers, and others have built dams. So did the early settlers and occupants of Dullstroom. They built a dam to the east of the town less than a kilometre from Oranje Plein where the church stands.",
   "It was the habit of the residents of the town to picnic on the banks of the dam and to bathe (rather than swim) in it. As was the custom in those days, when bathing, the men and the women used to do so separately. And the women did not wear the slick tight-fitting costumes of today but rather a whole outfit of undergarments including a full-length petticoat.",
@@ -184,16 +184,13 @@ function Index() {
 
       {!activeStory ? (
         <div id="home">
-          <section className="hero-section relative isolate flex min-h-[70vh] items-center justify-center overflow-hidden px-5 py-20 text-center">
+          <section className="hero-section relative isolate flex items-center justify-center overflow-hidden px-5 py-20 text-center">
              <img src={heroBanner} alt="Dullstroom Ghosts above a misty old Dullstroom street at dusk" width={1920} height={821} className="hero-image absolute inset-0 -z-20 h-full w-full object-cover object-top" />
              <div className="hero-overlay absolute inset-0 -z-10" />
-              <div className="hero-copy mx-auto flex min-h-[calc(70vh-10rem)] w-full max-w-5xl flex-col items-center">
+              <div className="hero-copy mx-auto flex w-full max-w-5xl flex-col items-center">
                 <h1 className="sr-only">Dullstroom Ghosts</h1>
-                 <p className="hero-tagline font-display text-[1.7rem] italic leading-snug text-hero sm:text-[2rem]">Every town has secrets. Dullstroom has ghosts.</p>
-                 <div className="mt-auto flex flex-col items-center pt-8">
-                   <a href="#stories" className="inline-flex min-h-11 items-center justify-center border border-hero/70 bg-background/90 px-5 py-3 text-xs font-semibold uppercase text-foreground transition-colors hover:bg-background">Read the Hauntings</a>
-                </div>
-            </div>
+                <p className="hero-tagline font-display text-[1.7rem] italic leading-snug text-hero sm:text-[2rem]">Every town has secrets. Dullstroom has ghosts.</p>
+              </div>
           </section>
 
             <section id="introduction" className="scroll-mt-16 bg-background px-5 py-20 sm:py-28">
@@ -241,7 +238,6 @@ function Index() {
                    </article>
                  ))}
                </div>
-               <p className="mt-6 text-center text-xs text-muted-foreground">Story price shown as {CURRENCY}{PRICE} for review; final pricing to be confirmed.</p>
             </div>
           </section>
 
@@ -308,8 +304,20 @@ function Index() {
                 <div id="payment" className="scroll-mt-24 mt-12 border border-border bg-background p-7 sm:p-9">
                   <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Payment</p>
                   <h3 className="mt-3 font-display text-3xl font-semibold text-foreground">Editing &amp; hosting fee</h3>
-                   <p className="mt-3 text-sm leading-6 text-muted-foreground">Pay after your story has been reviewed and accepted.</p>
-                   <Button type="button" className="mt-6" onClick={() => window.alert(`Paystack payment of ${CURRENCY}${EDITING_HOSTING_FEE} will open here.`)}><CreditCard className="h-4 w-4" aria-hidden="true" />Paystack {CURRENCY}{EDITING_HOSTING_FEE}</Button>
+                  <p className="mt-3 text-sm leading-6 text-muted-foreground">Pay after your story has been reviewed and accepted.</p>
+                  <div className="mt-6 border border-border bg-card p-5">
+                    <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">EFT details</p>
+                    <dl className="mt-4 grid gap-x-6 gap-y-2 text-sm sm:grid-cols-[130px_1fr]">
+                      <dt className="text-muted-foreground">Bank</dt><dd>Standard Bank</dd>
+                      <dt className="text-muted-foreground">Account name</dt><dd>Munro Deysel</dd>
+                      <dt className="text-muted-foreground">Account type</dt><dd>Savings</dd>
+                      <dt className="text-muted-foreground">Account number</dt><dd>358828600</dd>
+                      <dt className="text-muted-foreground">Branch code</dt><dd>051001</dd>
+                      <dt className="text-muted-foreground">Amount</dt><dd>{CURRENCY}{EDITING_HOSTING_FEE}</dd>
+                      <dt className="text-muted-foreground">Reference</dt><dd>Email + Story</dd>
+                    </dl>
+                  </div>
+                  <Button type="button" className="mt-6" onClick={() => window.alert(`Paystack payment of ${CURRENCY}${EDITING_HOSTING_FEE} will open here.`)}><CreditCard className="h-4 w-4" aria-hidden="true" />Paystack {CURRENCY}{EDITING_HOSTING_FEE}</Button>
                 </div>
              </div>
            </section>
