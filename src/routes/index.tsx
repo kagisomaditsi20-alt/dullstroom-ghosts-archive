@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ArrowLeft, ArrowRight, CreditCard, Image as ImageIcon, Mail, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Image as ImageIcon, Mail, X } from "lucide-react";
 import { type FormEvent, useEffect, useState } from "react";
 
 import { Button } from "../components/Button";
@@ -317,7 +317,6 @@ function Index() {
                       <dt className="text-muted-foreground">Reference</dt><dd>Email + Story</dd>
                     </dl>
                   </div>
-                  <Button type="button" className="mt-6" onClick={() => window.alert(`Paystack payment of ${CURRENCY}${EDITING_HOSTING_FEE} will open here.`)}><CreditCard className="h-4 w-4" aria-hidden="true" />Paystack {CURRENCY}{EDITING_HOSTING_FEE}</Button>
                 </div>
              </div>
            </section>
