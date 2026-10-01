@@ -13,3 +13,5 @@
 - [x] Add the supplied bank details to the Payments section
 - [x] Apply the 15 requested hero, introduction, advertising, story, payment, and event edits
 - [x] Verify the revised payment popup and desktop/mobile presentation
+- [x] Delete the hero button, set the Story 2 extract, remove the pricing note, keep R29 with EFT/Paystack
+- [x] Verify the hero and payment areas at phone and laptop sizes
