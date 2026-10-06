@@ -3,6 +3,7 @@ import { ArrowLeft, ArrowRight, Image as ImageIcon, Mail, X } from "lucide-react
 import { type FormEvent, useEffect, useState } from "react";
 
 import { Button } from "../components/Button";
+import { submitReaderPayment, submitWriterStory } from "../lib/submissions.functions";
 import heroBanner from "../assets/dullstroom-ghosts-hero-revised.jpg";
 import marketPoster from "../assets/dullstroom-village-market.jpg.asset.json";
 import friendsPortrait from "../assets/friends-united-portrait.png.asset.json";
@@ -110,17 +111,22 @@ const stories = {
 function Index() {
   const [activeStory, setActiveStory] = useState<StoryId | null>(null);
   const [unlockedStories, setUnlockedStories] = useState<StoryId[]>([]);
-  const [submission, setSubmission] = useState({ name: "", email: "", title: "", story: "" });
+  const [submission, setSubmission] = useState({ email: "", title: "" });
   const [permissions, setPermissions] = useState([false, false, false]);
   const [submitted, setSubmitted] = useState(false);
+  const [storyFile, setStoryFile] = useState<File | null>(null);
+  const [writerProof, setWriterProof] = useState<File | null>(null);
+  const [writerSending, setWriterSending] = useState(false);
+  const [writerError, setWriterError] = useState("");
   const [unlockingStory, setUnlockingStory] = useState<StoryId | null>(null);
   const [proofEmail, setProofEmail] = useState("");
   const [proofFile, setProofFile] = useState<File | null>(null);
   const [proofReceived, setProofReceived] = useState(false);
-  const wordCount = submission.story.trim() ? submission.story.trim().split(/\s+/).length : 0;
-  const submissionReady = Object.values(submission).every((value) => value.trim().length > 0)
+  const [proofSending, setProofSending] = useState(false);
+  const [proofError, setProofError] = useState("");
+  const submissionReady = submission.title.trim().length > 0
     && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(submission.email)
-    && wordCount <= 750
+    && !!storyFile && !!writerProof
     && permissions.every(Boolean);
 
   useEffect(() => {
@@ -143,21 +149,47 @@ function Index() {
     setProofEmail("");
     setProofFile(null);
     setProofReceived(false);
+    setProofError("");
   }
 
-  function submitProof(event: FormEvent<HTMLFormElement>) {
+  async function submitProof(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!unlockingStory || !proofEmail || !proofFile) return;
-    setProofReceived(true);
+    const form = new FormData();
+    form.append("email", proofEmail);
+    form.append("story", `Story ${stories[unlockingStory].number} - ${stories[unlockingStory].title}`);
+    form.append("proof", proofFile);
+    setProofSending(true);
+    setProofError("");
+    try {
+      await submitReaderPayment({ data: form });
+      setProofReceived(true);
+    } catch {
+      setProofError("Sending failed. Please check your file (max 10MB) and try again.");
+    } finally {
+      setProofSending(false);
+    }
   }
 
-  function submitStory(event: FormEvent<HTMLFormElement>) {
+  async function submitStory(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!submissionReady) return;
-    const subject = encodeURIComponent(`Ghost story for editing: ${submission.title}`);
-    const body = encodeURIComponent(`Name: ${submission.name}\nEmail: ${submission.email}\n\n${submission.story}`);
-    window.location.href = `mailto:kagisomaditsi20@gmail.com?subject=${subject}&body=${body}`;
-    setSubmitted(true);
+    if (!submissionReady || !storyFile || !writerProof) return;
+    const form = new FormData();
+    form.append("title", submission.title);
+    form.append("email", submission.email);
+    form.append("permissions", "all");
+    form.append("storyFile", storyFile);
+    form.append("proof", writerProof);
+    setWriterSending(true);
+    setWriterError("");
+    try {
+      await submitWriterStory({ data: form });
+      setSubmitted(true);
+    } catch {
+      setWriterError("Sending failed. Please check your files (max 10MB each) and try again.");
+    } finally {
+      setWriterSending(false);
+    }
   }
 
   const currentStory = activeStory ? stories[activeStory] : null;
@@ -271,33 +303,35 @@ function Index() {
                <p className="text-[0.6875rem] font-semibold uppercase text-muted-foreground">Community archive</p>
                 <h2 className="mt-2 font-display text-5xl font-medium leading-none text-foreground">Your Ghost Story</h2>
                  <p className="mt-5 max-w-2xl font-display text-xl leading-relaxed text-reading">Send your story to our editor for review. Stories are edited first and are never published automatically.</p>
-               {submitted ? (
-                 <div role="status" className="mt-10 border border-primary bg-background p-8 text-center font-display text-2xl text-reading">Thank you, your story has been received for review.</div>
-               ) : (
-                 <form className="mt-10 grid gap-6" onSubmit={submitStory}>
-                   <div className="grid gap-6 sm:grid-cols-2">
-                     <FormField label="Name" name="name" type="text" value={submission.name} onChange={(value) => setSubmission({ ...submission, name: value })} />
-                     <FormField label="Email" name="email" type="email" value={submission.email} onChange={(value) => setSubmission({ ...submission, email: value })} />
-                   </div>
-                   <FormField label="Title" name="title" type="text" value={submission.title} onChange={(value) => setSubmission({ ...submission, title: value })} />
-                   <label className="grid gap-2 text-sm font-semibold text-foreground" htmlFor="story">Story
-                     <textarea id="story" name="story" required rows={12} maxLength={12000} value={submission.story} onChange={(event) => setSubmission({ ...submission, story: event.target.value })} className="form-control min-h-64 resize-y font-display text-lg font-normal leading-relaxed" />
-                     <span className={`text-right text-xs font-normal ${wordCount > 750 ? "text-error" : "text-muted-foreground"}`}>{wordCount} / 750 words</span>
-                   </label>
-                   <fieldset className="grid gap-4 border-t border-border pt-6">
-                     <legend className="mb-4 font-display text-2xl font-semibold text-foreground">Permissions</legend>
-                     {[
-                       "I give Dullstroom Ghosts permission to publish the story and to do so without expectation of compensation in any form or in any amount.",
-                       "I give Dullstroom Ghosts permission to commercialise the story without expectation of compensation in any form or in any amount.",
-                       "I give Dullstroom Ghosts permission to edit the story in any way it sees fit.",
-                     ].map((permission, index) => (
-                       <label key={permission} className="flex items-start gap-3 text-sm leading-6 text-reading">
-                         <input type="checkbox" required checked={permissions[index]} onChange={(event) => setPermissions(permissions.map((checked, permissionIndex) => permissionIndex === index ? event.target.checked : checked))} className="mt-1 h-4 w-4 accent-primary" />
-                         <span>{permission}</span>
-                       </label>
-                     ))}
-                   </fieldset>
-                    <Button type="submit" disabled={!submissionReady} className="w-full sm:w-auto sm:justify-self-start"><Mail className="h-4 w-4" aria-hidden="true" />Email story for editing</Button>
+                {submitted ? (
+                  <div role="status" className="mt-10 border border-primary bg-background p-8 text-center font-display text-2xl text-reading">Story and proof sent!</div>
+                ) : (
+                  <form className="mt-10 grid gap-6" onSubmit={submitStory}>
+                    <div className="grid gap-6 sm:grid-cols-2">
+                      <FormField label="Story Title" name="title" type="text" value={submission.title} onChange={(value) => setSubmission({ ...submission, title: value })} />
+                      <FormField label="Author Email" name="email" type="email" value={submission.email} onChange={(value) => setSubmission({ ...submission, email: value })} />
+                    </div>
+                    <label className="grid gap-2 text-sm font-semibold text-foreground" htmlFor="story-file">Story file (DOC, DOCX, PDF or TXT)
+                      <input id="story-file" type="file" required accept=".doc,.docx,.pdf,.txt" onChange={(event) => setStoryFile(event.target.files?.[0] ?? null)} className="form-control file:mr-3 file:border-0 file:bg-primary file:px-3 file:py-2 file:text-primary-foreground" />
+                    </label>
+                    <label className="grid gap-2 text-sm font-semibold text-foreground" htmlFor="writer-proof">Proof of payment (JPG, PNG or PDF)
+                      <input id="writer-proof" type="file" required accept=".jpg,.jpeg,.png,.pdf" onChange={(event) => setWriterProof(event.target.files?.[0] ?? null)} className="form-control file:mr-3 file:border-0 file:bg-primary file:px-3 file:py-2 file:text-primary-foreground" />
+                    </label>
+                    <fieldset className="grid gap-4 border-t border-border pt-6">
+                      <legend className="mb-4 font-display text-2xl font-semibold text-foreground">Permissions</legend>
+                      {[
+                        "I give Dullstroom Ghosts permission to publish the story and to do so without expectation of compensation in any form or in any amount.",
+                        "I give Dullstroom Ghosts permission to commercialise the story without expectation of compensation in any form or in any amount.",
+                        "I give Dullstroom Ghosts permission to edit the story in any way it sees fit.",
+                      ].map((permission, index) => (
+                        <label key={permission} className="flex items-start gap-3 text-sm leading-6 text-reading">
+                          <input type="checkbox" required checked={permissions[index]} onChange={(event) => setPermissions(permissions.map((checked, permissionIndex) => permissionIndex === index ? event.target.checked : checked))} className="mt-1 h-4 w-4 accent-primary" />
+                          <span>{permission}</span>
+                        </label>
+                      ))}
+                    </fieldset>
+                    {writerError && <p role="alert" className="text-sm text-error">{writerError}</p>}
+                    <Button type="submit" disabled={!submissionReady || writerSending} className="w-full sm:w-auto sm:justify-self-start"><Mail className="h-4 w-4" aria-hidden="true" />{writerSending ? "Sending..." : "Email story for editing"}</Button>
                  </form>
                )}
                 <div id="payment" className="scroll-mt-24 mt-12 border border-border bg-background p-7 sm:p-9">
@@ -313,7 +347,7 @@ function Index() {
                       <dt className="text-muted-foreground">Account number</dt><dd>358828600</dd>
                       <dt className="text-muted-foreground">Branch code</dt><dd>051001</dd>
                       <dt className="text-muted-foreground">Amount</dt><dd>{CURRENCY}{EDITING_HOSTING_FEE}</dd>
-                      <dt className="text-muted-foreground">Reference</dt><dd>Email + Story</dd>
+                      <dt className="text-muted-foreground">Reference</dt><dd>Story Name + Your Email (e.g. Children At Play john@gmail.com)</dd>
                     </dl>
                   </div>
                 </div>
@@ -370,20 +404,26 @@ function Index() {
                   <dt className="text-muted-foreground">Account number</dt><dd>358828600</dd>
                   <dt className="text-muted-foreground">Branch code</dt><dd>051001</dd>
                   <dt className="text-muted-foreground">Amount</dt><dd>{CURRENCY}{PRICE}</dd>
-                  <dt className="text-muted-foreground">Reference</dt><dd>Email + Story</dd>
+                  <dt className="text-muted-foreground">Reference</dt><dd>Email + Story Number (e.g. john@gmail.com Story 1)</dd>
                 </dl>
                 <label className="grid gap-2 text-sm font-semibold" htmlFor="proof-email">Email
                   <input id="proof-email" type="email" required value={proofEmail} onChange={(event) => setProofEmail(event.target.value)} className="form-control" />
                 </label>
-                <label className="grid gap-2 text-sm font-semibold" htmlFor="proof-file">Upload proof of payment
-                  <input id="proof-file" type="file" required accept="image/*,.pdf" onChange={(event) => setProofFile(event.target.files?.[0] ?? null)} className="form-control file:mr-3 file:border-0 file:bg-primary file:px-3 file:py-2 file:text-primary-foreground" />
+                <label className="grid gap-2 text-sm font-semibold" htmlFor="proof-story">Story
+                  <select id="proof-story" required value={unlockingStory} onChange={(event) => setUnlockingStory(event.target.value as StoryId)} className="form-control">
+                    <option value="children">Story 1 - Children At Play</option>
+                    <option value="friends">Story 2 - Friends United</option>
+                  </select>
                 </label>
-                <Button type="submit" disabled={!proofEmail || !proofFile} className="w-full">Submit proof</Button>
+                <label className="grid gap-2 text-sm font-semibold" htmlFor="proof-file">Upload proof of payment (JPG, PNG or PDF)
+                  <input id="proof-file" type="file" required accept=".jpg,.jpeg,.png,.pdf" onChange={(event) => setProofFile(event.target.files?.[0] ?? null)} className="form-control file:mr-3 file:border-0 file:bg-primary file:px-3 file:py-2 file:text-primary-foreground" />
+                </label>
+                {proofError && <p role="alert" className="text-sm text-error">{proofError}</p>}
+                <Button type="submit" disabled={!proofEmail || !proofFile || proofSending} className="w-full">{proofSending ? "Sending..." : "Submit proof"}</Button>
               </form>
             ) : (
               <div className="mt-7 border border-primary p-6 text-center">
-                <p className="font-display text-2xl text-reading">Proof received!</p>
-                <p className="mt-3 text-sm leading-6 text-muted-foreground">Thank you. The story stays locked until your payment is checked. Once it is confirmed, the story will be sent to your email.</p>
+                <p className="font-display text-2xl text-reading">Proof sent! Story will be emailed to you.</p>
                 <Button type="button" className="mt-6" onClick={() => setUnlockingStory(null)}>Close</Button>
               </div>
             )}
