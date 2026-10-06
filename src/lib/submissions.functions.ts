@@ -18,7 +18,7 @@ async function save(folder: string, files: { name: string; file: File }[], detai
   const id = `${new Date().toISOString().replace(/[:.]/g, "-")}-${crypto.randomUUID().slice(0, 8)}`;
   const bucket = supabaseAdmin.storage.from("submissions");
   for (const { name, file } of files) {
-    const { error } = await bucket.upload(`${folder}/${id}/${name}`, file, { contentType: file.type || undefined });
+    const { error } = await bucket.upload(`${folder}/${id}/${name}`, file, { contentType: file.type || "application/octet-stream" });
     if (error) throw new Error("Upload failed, please try again.");
   }
   const { error } = await bucket.upload(`${folder}/${id}/details.json`, new Blob([JSON.stringify(details, null, 2)], { type: "application/json" }));
