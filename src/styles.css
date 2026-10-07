@@ -111,19 +111,6 @@
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; }
 }
 
-.ad-slot {
-  display: grid;
-  place-items: center;
-  border: 1px solid var(--border);
-  background: var(--placeholder);
-  color: var(--muted-foreground);
-  font-size: 0.625rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  background-image: repeating-linear-gradient(135deg, transparent 0, transparent 10px, rgb(245 245 220 / 0.035) 10px, rgb(245 245 220 / 0.035) 11px);
-}
-.ad-sidebar { width: min(100%, 300px); aspect-ratio: 300 / 250; justify-self: center; }
 .form-control {
   width: 100%;
   border: 1px solid var(--border);
