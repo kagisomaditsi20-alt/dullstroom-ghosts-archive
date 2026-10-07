@@ -15,3 +15,4 @@
 - [x] Verify the revised payment popup and desktop/mobile presentation
 - [x] Delete the hero button, set the Story 2 extract, remove the pricing note, keep R29 with EFT/Paystack
 - [x] Verify the hero and payment areas at phone and laptop sizes
+- [x] Add the Bubbly Meander and TRAC N4 Rally posters to Paid Advertisements (click to enlarge) and Upcoming Events; remove the 3–4 October Village Market event
