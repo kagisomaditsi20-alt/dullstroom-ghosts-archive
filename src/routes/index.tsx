@@ -472,9 +472,8 @@ function FormField({ label, name, type, value, onChange }: { label: string; name
 function SiteFooter() {
   return (
     <footer className="border-t border-border bg-footer px-5 py-10">
-      <div className="mx-auto grid max-w-6xl items-start gap-8 sm:grid-cols-[1fr_300px]">
-        <p className="pt-2 text-xs text-muted-foreground">© 2026 Dullstroom Ghosts <span aria-hidden="true">•</span> True stories, respectfully told.</p>
-        <div id="ad-sidebar" className="ad-slot ad-sidebar sticky top-24" role="complementary" aria-label="Advertisement"><span>Advertisement · 300 × 250</span></div>
+      <div className="mx-auto max-w-6xl">
+        <p className="text-xs text-muted-foreground">© 2026 Dullstroom Ghosts <span aria-hidden="true">•</span> True stories, respectfully told.</p>
       </div>
     </footer>
   );
