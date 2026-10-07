@@ -5,11 +5,11 @@ import { type FormEvent, useEffect, useState } from "react";
 import { Button } from "../components/Button";
 import { submitReaderPayment, submitWriterStory } from "../lib/submissions.functions";
 import heroBanner from "../assets/dullstroom-ghosts-hero-revised.jpg";
-import marketPoster from "../assets/dullstroom-village-market.jpg.asset.json";
+import bubblyPoster from "../assets/bubbly-meander-nov2026.jpg.asset.json";
 import friendsPortrait from "../assets/friends-united-portrait.png.asset.json";
 import heritageSociety from "../assets/dullstroom-heritage-society.jpg.asset.json";
 import church1895 from "../assets/hervormde-kerk-1895.jpg.asset.json";
-import bubblyMeander from "../assets/dullstroom-bubbly-meander-2026.jpg.asset.json";
+import tracRallyPoster from "../assets/trac-n4-rally-2026.jpg.asset.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -124,6 +124,7 @@ function Index() {
   const [proofReceived, setProofReceived] = useState(false);
   const [proofSending, setProofSending] = useState(false);
   const [proofError, setProofError] = useState("");
+  const [enlargedImage, setEnlargedImage] = useState<{ src: string; alt: string } | null>(null);
   const submissionReady = submission.title.trim().length > 0
     && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(submission.email)
     && !!storyFile && !!writerProof
@@ -238,13 +239,16 @@ function Index() {
             <section aria-labelledby="sponsored-title" className="border-y border-border bg-card px-5 py-12">
               <div className="mx-auto max-w-5xl">
                 <h2 id="sponsored-title" className="mb-5 text-center text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Sponsored advertisement</h2>
-                <div className="grid gap-7 sm:grid-cols-2">
+                <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
                   <a href="https://dullstroomheritagemuseum.co.za/" target="_blank" rel="noreferrer sponsored" className="group flex min-h-72 items-center justify-center border border-border bg-hero p-5" aria-label="Visit the Dullstroom Heritage Society website">
                     <img src={heritageSociety.url} alt="Dullstroom Heritage Society" className="max-h-64 w-full object-contain transition-transform group-hover:scale-[1.02]" />
                   </a>
-                  <article className="flex min-h-72 items-center justify-center border border-border bg-hero p-5">
-                    <img src={marketPoster.url} alt="Dullstroom Village Market Hello Spring, 3 and 4 October 2026" className="max-h-64 w-full object-contain" />
-                  </article>
+                  <button type="button" onClick={() => setEnlargedImage({ src: bubblyPoster.url, alt: "Dullstroom Bubbly and Friends Meander — Saturday 7 November 2026, 9:00–14:00" })} className="group flex min-h-72 items-center justify-center border border-border bg-hero p-5" aria-label="Enlarge the Dullstroom Bubbly and Friends Meander poster">
+                    <img src={bubblyPoster.url} alt="Dullstroom Bubbly and Friends Meander — Saturday 7 November 2026, 9:00–14:00" className="max-h-64 w-full object-contain transition-transform group-hover:scale-[1.02]" />
+                  </button>
+                  <button type="button" onClick={() => setEnlargedImage({ src: tracRallyPoster.url, alt: "TRAC N4 Rally Dullstroom 2026 — Saturday 31 October 9:00–15:00 and Sunday 1 November 9:00–13:00" })} className="group flex min-h-72 items-center justify-center border border-border bg-hero p-5" aria-label="Enlarge the TRAC N4 Rally Dullstroom 2026 poster">
+                    <img src={tracRallyPoster.url} alt="TRAC N4 Rally Dullstroom 2026 — Saturday 31 October 9:00–15:00 and Sunday 1 November 9:00–13:00" className="max-h-64 w-full object-contain transition-transform group-hover:scale-[1.02]" />
+                  </button>
                 </div>
              </div>
            </section>
@@ -428,6 +432,15 @@ function Index() {
               </div>
             )}
           </div>
+        </div>
+      )}
+
+      {enlargedImage && (
+        <div className="fixed inset-0 z-[110] grid place-items-center bg-background/95 p-4" role="dialog" aria-modal="true" aria-label="Enlarged poster" onClick={() => setEnlargedImage(null)}>
+          <button type="button" aria-label="Close enlarged poster" className="absolute right-4 top-4 min-h-10 border border-border bg-card px-3 py-2 text-muted-foreground hover:text-foreground" onClick={() => setEnlargedImage(null)}>
+            <X className="h-4 w-4" aria-hidden="true" />
+          </button>
+          <img src={enlargedImage.src} alt={enlargedImage.alt} className="max-h-[92vh] w-auto max-w-full border border-border bg-card object-contain" />
         </div>
       )}
     </main>
