@@ -281,23 +281,23 @@ function Index() {
                 <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">What’s on in Dullstroom</p>
                 <h2 id="event-title" className="mt-2 font-display text-5xl font-medium text-foreground">Upcoming Events</h2>
                  <div className="mt-9 grid gap-8">
-                   <article className="grid gap-8 border border-border bg-card p-5 sm:grid-cols-[minmax(0,440px)_1fr] sm:p-8">
-                     <img src={marketPoster.url} alt="Dullstroom Village Market Hello Spring, 3 and 4 October 2026" className="w-full border border-border object-cover" />
-                     <div className="self-center">
-                       <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Featured event</p>
-                       <h3 className="mt-3 font-display text-4xl font-semibold text-foreground">Dullstroom Village Market</h3>
-                       <p className="mt-4 font-display text-xl italic text-reading">Hello Spring · 3 &amp; 4 October 2026 · Verlorenkloof</p>
-                     </div>
-                   </article>
-                   <article className="grid gap-8 border border-border bg-card p-5 sm:grid-cols-[minmax(0,440px)_1fr] sm:p-8">
-                     <img src={bubblyMeander.url} alt="Dullstroom Bubbly and Friends Meander flyer" className="w-full border border-border object-cover" />
-                     <div className="self-center">
-                       <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Featured event</p>
-                       <h3 className="mt-3 font-display text-4xl font-semibold text-foreground">Dullstroom Bubbly and Friends Meander</h3>
-                       <p className="mt-4 font-display text-xl italic text-reading">7 November 2026 · 10:00–17:00 · R180 per person</p>
-                       <p className="mt-3 text-sm text-muted-foreground">Starting point: The Duck &amp; Trout</p>
-                     </div>
-                   </article>
+                    <article className="grid gap-8 border border-border bg-card p-5 sm:grid-cols-[minmax(0,440px)_1fr] sm:p-8">
+                      <img src={bubblyPoster.url} alt="Dullstroom Bubbly and Friends Meander poster" className="w-full border border-border object-cover" />
+                      <div className="self-center">
+                        <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Featured event</p>
+                        <h3 className="mt-3 font-display text-4xl font-semibold text-foreground">Dullstroom Bubbly and Friends Meander</h3>
+                        <p className="mt-4 font-display text-xl italic text-reading">Saturday 7 November 2026 &middot; 9:00&ndash;14:00</p>
+                      </div>
+                    </article>
+                    <article className="grid gap-8 border border-border bg-card p-5 sm:grid-cols-[minmax(0,440px)_1fr] sm:p-8">
+                      <img src={tracRallyPoster.url} alt="TRAC N4 Rally Dullstroom 2026 poster" className="w-full border border-border object-cover" />
+                      <div className="self-center">
+                        <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Featured event</p>
+                        <h3 className="mt-3 font-display text-4xl font-semibold text-foreground">TRAC N4 Rally Dullstroom 2026</h3>
+                        <p className="mt-4 font-display text-xl italic text-reading">Saturday 31 October 2026 &middot; 9:00&ndash;15:00</p>
+                        <p className="mt-2 font-display text-xl italic text-reading">Sunday 1 November 2026 &middot; 9:00&ndash;13:00</p>
+                      </div>
+                    </article>
                  </div>
               </div>
            </section>
