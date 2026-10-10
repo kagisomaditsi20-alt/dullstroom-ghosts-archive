@@ -341,7 +341,7 @@ function Index() {
                 <div id="payment" className="scroll-mt-24 mt-12 border border-border bg-background p-7 sm:p-9">
                   <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Payment</p>
                   <h3 className="mt-3 font-display text-3xl font-semibold text-foreground">Editing &amp; hosting fee</h3>
-                  <p className="mt-3 text-sm leading-6 text-muted-foreground">Pay after your story has been reviewed and accepted.</p>
+                  <p className="mt-3 text-sm leading-6 text-muted-foreground">Pay for your story to be reviewed and accepted</p>
                   <div className="mt-6 border border-border bg-card p-5">
                     <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">EFT details</p>
                     <dl className="mt-4 grid gap-x-6 gap-y-2 text-sm sm:grid-cols-[130px_1fr]">
@@ -427,7 +427,7 @@ function Index() {
               </form>
             ) : (
               <div className="mt-7 border border-primary p-6 text-center">
-                <p className="font-display text-2xl text-reading">Proof sent! Story will be emailed to you.</p>
+                <p className="font-display text-2xl text-reading">Proof submitted successfully!</p>
                 <Button type="button" className="mt-6" onClick={() => setUnlockingStory(null)}>Close</Button>
               </div>
             )}
