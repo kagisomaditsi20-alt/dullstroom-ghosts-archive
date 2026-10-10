@@ -42,6 +42,15 @@ export const submitReaderPayment = createServerFn({ method: "POST" })
       date: new Date().toISOString(),
       amount: "R29",
     });
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const path = `${Date.now()}_${proof.file.name.replace(/[^\w.-]/g, "_")}`;
+    const up = await supabaseAdmin.storage.from("proofs").upload(path, proof.file, { contentType: proof.file.type || "application/octet-stream" });
+    if (up.error) throw new Error("Upload failed, please try again.");
+    const signed = await supabaseAdmin.storage.from("proofs").createSignedUrl(path, 60 * 60 * 24 * 365);
+    const fileUrl = signed.data?.signedUrl ?? path;
+    const ins = await supabaseAdmin.from("proofs").insert({ buyer_email: email, file_url: fileUrl });
+    if (ins.error) console.error("proofs insert failed", ins.error);
+    // TODO: send email to dullstroomghosts@yahoo.com once an email service is connected.
     return { ok: true };
   });
 
