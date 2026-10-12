@@ -1,6 +1,38 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
+const GATEWAY_URL = "https://connector-gateway.lovable.dev/resend";
+const NOTIFY_EMAIL = "dullstroomghosts@yahoo.com";
+
+async function sendEmail(subject: string, lines: string[]) {
+  const lovableKey = process.env.LOVABLE_API_KEY;
+  const resendKey = process.env.RESEND_API_KEY;
+  if (!lovableKey || !resendKey) {
+    console.error("Email skipped: missing LOVABLE_API_KEY or RESEND_API_KEY");
+    return;
+  }
+  const html = `<div style="font-family:Arial,sans-serif;font-size:14px;color:#111">${lines
+    .map((l) => `<p>${l}</p>`)
+    .join("")}</div>`;
+  const response = await fetch(`${GATEWAY_URL}/emails`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${lovableKey}`,
+      "X-Connection-Api-Key": resendKey,
+    },
+    body: JSON.stringify({
+      from: "Dullstroom Ghosts <onboarding@resend.dev>",
+      to: [NOTIFY_EMAIL],
+      subject,
+      html,
+    }),
+  });
+  const body = await response.text();
+  console.log(`Resend response [${response.status}]: ${body}`);
+  if (!response.ok) console.error(`Email send failed [${response.status}]: ${body}`);
+}
+
 const MAX = 10 * 1024 * 1024;
 const emailSchema = z.string().trim().email().max(255);
 
