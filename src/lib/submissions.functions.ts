@@ -1,6 +1,38 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
+const GATEWAY_URL = "https://connector-gateway.lovable.dev/resend";
+const NOTIFY_EMAIL = "dullstroomghosts@yahoo.com";
+
+async function sendEmail(subject: string, lines: string[]) {
+  const lovableKey = process.env["LOVABLE_API_KEY"];
+  const resendKey = process.env["RESEND_API_KEY"];
+  if (!lovableKey || !resendKey) {
+    console.error("Email skipped: missing LOVABLE_API_KEY or RESEND_API_KEY");
+    return;
+  }
+  const html = `<div style="font-family:Arial,sans-serif;font-size:14px;color:#111">${lines
+    .map((l) => `<p>${l}</p>`)
+    .join("")}</div>`;
+  const response = await fetch(`${GATEWAY_URL}/emails`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${lovableKey}`,
+      "X-Connection-Api-Key": resendKey,
+    },
+    body: JSON.stringify({
+      from: "Dullstroom Ghosts <onboarding@resend.dev>",
+      to: [NOTIFY_EMAIL],
+      subject,
+      html,
+    }),
+  });
+  const body = await response.text();
+  console.log(`Resend response [${response.status}]: ${body}`);
+  if (!response.ok) console.error(`Email send failed [${response.status}]: ${body}`);
+}
+
 const MAX = 10 * 1024 * 1024;
 const emailSchema = z.string().trim().email().max(255);
 
@@ -50,7 +82,13 @@ export const submitReaderPayment = createServerFn({ method: "POST" })
     const fileUrl = signed.data?.signedUrl ?? path;
     const ins = await supabaseAdmin.from("proofs").insert({ buyer_email: email, file_url: fileUrl });
     if (ins.error) console.error("proofs insert failed", ins.error);
-    // TODO: send email to dullstroomghosts@yahoo.com once an email service is connected.
+    await sendEmail(`READER PAYMENT: ${story} from ${email}`, [
+      `<strong>Customer Email:</strong> ${email}`,
+      `<strong>Story Requested:</strong> ${story}`,
+      `<strong>Date:</strong> ${new Date().toISOString()}`,
+      `<strong>Amount:</strong> R29`,
+      `<strong>Proof of payment:</strong> <a href="${fileUrl}">${fileUrl}</a>`,
+    ]);
     return { ok: true };
   });
 
@@ -77,5 +115,14 @@ export const submitWriterStory = createServerFn({ method: "POST" })
       amount: "R29",
       date: new Date().toISOString(),
     });
+    await sendEmail(`WRITER SUBMISSION: ${title}`, [
+      `<strong>Story Title:</strong> ${title}`,
+      `<strong>Author Email:</strong> ${email}`,
+      `<strong>Permissions:</strong> Publish, commercialise and edit — all granted`,
+      `<strong>Payment Reference:</strong> ${title}`,
+      `<strong>Amount:</strong> R29`,
+      `<strong>Date:</strong> ${new Date().toISOString()}`,
+      `<strong>Files:</strong> story file and proof of payment are saved in the site storage under writer-submissions.`,
+    ]);
     return { ok: true };
   });
