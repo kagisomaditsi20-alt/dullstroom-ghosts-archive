@@ -5,8 +5,8 @@ const GATEWAY_URL = "https://connector-gateway.lovable.dev/resend";
 const NOTIFY_EMAIL = "dullstroomghosts@yahoo.com";
 
 async function sendEmail(subject: string, lines: string[]) {
-  const lovableKey = process.env.LOVABLE_API_KEY;
-  const resendKey = process.env.RESEND_API_KEY;
+  const lovableKey = process.env["LOVABLE_API_KEY"];
+  const resendKey = process.env["RESEND_API_KEY"];
   if (!lovableKey || !resendKey) {
     console.error("Email skipped: missing LOVABLE_API_KEY or RESEND_API_KEY");
     return;
