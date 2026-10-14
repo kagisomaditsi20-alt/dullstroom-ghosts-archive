@@ -1,5 +1,9 @@
 # Roadmap
 
+- [ ] Keep navigation fixed and align all six section anchors without excess top spacing
+- [ ] Remove Community archive label from Your Ghost Story
+- [ ] Attach story and payment proof to writer emails and verify a real submission
+
 - [x] Replace the current promotional homepage with the final literary archive design
 - [x] Add the complete “Children At Play” story and persistent simulated paywall
 - [x] Add archival photograph upload placeholders and exact captions
