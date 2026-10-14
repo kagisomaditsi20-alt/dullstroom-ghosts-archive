@@ -30,6 +30,7 @@
 }
 
 :root {
+  --header-height: 90px;
   --background: #0a0a0a;
   --foreground: #f5f5dc;
   --card: #141412;
@@ -55,10 +56,21 @@
 @layer base {
   * { box-sizing: border-box; border-color: var(--border); }
   html { scroll-behavior: smooth; overflow-x: hidden; }
-  body { margin: 0; overflow-x: hidden; background: var(--background); color: var(--foreground); font-family: var(--font-sans); letter-spacing: 0; }
+  body { margin: 0; padding-top: var(--header-height); overflow-x: hidden; background: var(--background); color: var(--foreground); font-family: var(--font-sans); letter-spacing: 0; }
   button, a { -webkit-tap-highlight-color: transparent; }
   button { cursor: pointer; }
   ::selection { background: var(--accent); color: var(--foreground); }
+}
+
+#home, #introduction, #stories, #upcoming-events, #your-ghost-story, #payment {
+  scroll-margin-top: max(90px, var(--header-height));
+}
+
+#payment { min-height: calc(100dvh - var(--header-height)); }
+
+@media (min-width: 641px) and (max-width: 1023px) {
+  header > div { flex-wrap: wrap; justify-content: center; padding-block: 0.65rem; }
+  header nav { flex-wrap: wrap; }
 }
 
 @utility nav-link {
