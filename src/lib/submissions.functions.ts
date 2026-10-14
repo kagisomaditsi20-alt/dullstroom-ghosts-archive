@@ -4,12 +4,11 @@ import { z } from "zod";
 const GATEWAY_URL = "https://connector-gateway.lovable.dev/resend";
 const NOTIFY_EMAIL = "dullstroomghosts@yahoo.com";
 
-async function sendEmail(subject: string, lines: string[]) {
+async function sendEmail(subject: string, lines: string[], attachments: { filename: string; content: string }[] = []) {
   const lovableKey = process.env["LOVABLE_API_KEY"];
   const resendKey = process.env["RESEND_API_KEY"];
   if (!lovableKey || !resendKey) {
-    console.error("Email skipped: missing LOVABLE_API_KEY or RESEND_API_KEY");
-    return;
+    throw new Error("Email sending is not configured.");
   }
   const html = `<div style="font-family:Arial,sans-serif;font-size:14px;color:#111">${lines
     .map((l) => `<p>${l}</p>`)
@@ -26,11 +25,28 @@ async function sendEmail(subject: string, lines: string[]) {
       to: [NOTIFY_EMAIL],
       subject,
       html,
+      attachments,
     }),
   });
   const body = await response.text();
   console.log(`Resend response [${response.status}]: ${body}`);
-  if (!response.ok) console.error(`Email send failed [${response.status}]: ${body}`);
+  if (!response.ok) {
+    console.error(`Email send failed [${response.status}]: ${body}`);
+    throw new Error(`Email send failed [${response.status}]: ${body}`);
+  }
+}
+
+function escapeHtml(value: string) {
+  return value.replace(/[&<>"']/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[character] ?? character);
+}
+
+async function emailAttachment(file: File) {
+  const bytes = new Uint8Array(await file.arrayBuffer());
+  const chunks: string[] = [];
+  for (let offset = 0; offset < bytes.length; offset += 8192) {
+    chunks.push(String.fromCharCode(...bytes.subarray(offset, offset + 8192)));
+  }
+  return { filename: file.name, content: btoa(chunks.join("")) };
 }
 
 const MAX = 10 * 1024 * 1024;
@@ -55,7 +71,6 @@ async function save(folder: string, files: { name: string; file: File }[], detai
   }
   const { error } = await bucket.upload(`${folder}/${id}/details.json`, new Blob([JSON.stringify(details, null, 2)], { type: "application/json" }));
   if (error) throw new Error("Upload failed, please try again.");
-  // TODO: once an email sender domain is set up, email dullstroomghosts@yahoo.com here with links to these files.
 }
 
 export const submitReaderPayment = createServerFn({ method: "POST" })
@@ -103,6 +118,8 @@ export const submitWriterStory = createServerFn({ method: "POST" })
     if (data.get("permissions") !== "all") throw new Error("All permissions are required");
     const story = getFile(data, "storyFile", ["doc", "docx", "pdf", "txt"]);
     const proof = getFile(data, "proof", ["jpg", "jpeg", "png", "pdf"]);
+    const date = new Date().toISOString();
+    const attachments = await Promise.all([emailAttachment(story.file), emailAttachment(proof.file)]);
     await save("writer-submissions", [
       { name: `story.${story.ext}`, file: story.file },
       { name: `proof.${proof.ext}`, file: proof.file },
@@ -113,16 +130,15 @@ export const submitWriterStory = createServerFn({ method: "POST" })
       permissions: "Publish, commercialise and edit — all granted",
       paymentReference: title,
       amount: "R29",
-      date: new Date().toISOString(),
+      date,
     });
     await sendEmail(`WRITER SUBMISSION: ${title}`, [
-      `<strong>Story Title:</strong> ${title}`,
+      `<strong>Story Title:</strong> ${escapeHtml(title)}`,
       `<strong>Author Email:</strong> ${email}`,
       `<strong>Permissions:</strong> Publish, commercialise and edit — all granted`,
-      `<strong>Payment Reference:</strong> ${title}`,
+      `<strong>Payment Reference:</strong> ${escapeHtml(title)}`,
       `<strong>Amount:</strong> R29`,
-      `<strong>Date:</strong> ${new Date().toISOString()}`,
-      `<strong>Files:</strong> story file and proof of payment are saved in the site storage under writer-submissions.`,
-    ]);
+      `<strong>Date:</strong> ${date}`,
+    ], attachments);
     return { ok: true };
   });

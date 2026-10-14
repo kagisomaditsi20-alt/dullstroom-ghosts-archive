@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ArrowLeft, ArrowRight, Image as ImageIcon, Mail, X } from "lucide-react";
-import { type FormEvent, useEffect, useState } from "react";
+import { type FormEvent, useEffect, useRef, useState } from "react";
 
 import { Button } from "../components/Button";
 import { submitReaderPayment, submitWriterStory } from "../lib/submissions.functions";
@@ -109,6 +109,7 @@ const stories = {
 } as const;
 
 function Index() {
+  const headerRef = useRef<HTMLElement>(null);
   const [activeStory, setActiveStory] = useState<StoryId | null>(null);
   const [unlockedStories, setUnlockedStories] = useState<StoryId[]>([]);
   const [submission, setSubmission] = useState({ email: "", title: "" });
@@ -129,6 +130,19 @@ function Index() {
     && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(submission.email)
     && !!storyFile && !!writerProof
     && permissions.every(Boolean);
+
+  useEffect(() => {
+    const header = headerRef.current;
+    if (!header) return;
+    const updateHeight = () => document.body.style.setProperty("--header-height", `${header.getBoundingClientRect().height}px`);
+    updateHeight();
+    const observer = new ResizeObserver(updateHeight);
+    observer.observe(header);
+    return () => {
+      observer.disconnect();
+      document.body.style.removeProperty("--header-height");
+    };
+  }, []);
 
   useEffect(() => {
     // Stories stay locked until payment is verified by the editor; old browser unlocks are cleared.
@@ -198,8 +212,8 @@ function Index() {
 
   return (
     <main className="min-h-screen overflow-x-hidden bg-background text-foreground">
-      <header className="sticky top-0 z-50 border-b border-border/80 bg-background/95 backdrop-blur-md">
-        <div className="mx-auto flex min-h-16 max-w-6xl items-center justify-between gap-4 px-5 lg:px-8">
+      <header ref={headerRef} className="fixed left-0 top-0 z-[9999] w-full border-b border-border/80 bg-background/95 backdrop-blur-md">
+        <div className="mx-auto flex min-h-[90px] max-w-6xl items-center justify-between gap-4 px-5 lg:px-8">
           <button type="button" className="font-display text-lg font-semibold uppercase tracking-[0.09em] text-foreground sm:text-xl" onClick={() => { setActiveStory(null); window.scrollTo({ top: 0, behavior: "smooth" }); }}>
             Dullstroom Ghosts
           </button>
@@ -207,8 +221,8 @@ function Index() {
             <a href="#home" onClick={() => setActiveStory(null)} className="nav-link">Home</a>
             <a href="#introduction" onClick={() => setActiveStory(null)} className="nav-link">Introduction</a>
             <a href="#stories" onClick={() => setActiveStory(null)} className="nav-link">Stories</a>
-            <a href="#events" onClick={() => setActiveStory(null)} className="nav-link">Upcoming Events</a>
-            <a href="#your-story" onClick={() => setActiveStory(null)} className="nav-link">Your Ghost Story</a>
+            <a href="#upcoming-events" onClick={() => setActiveStory(null)} className="nav-link">Upcoming Events</a>
+            <a href="#your-ghost-story" onClick={() => setActiveStory(null)} className="nav-link">Your Ghost Story</a>
             <a href="#payment" onClick={() => setActiveStory(null)} className="nav-link">Payment</a>
           </nav>
         </div>
@@ -225,9 +239,9 @@ function Index() {
               </div>
           </section>
 
-            <section id="introduction" className="scroll-mt-16 bg-background px-5 py-20 sm:py-28">
-            <article className="paper-panel mx-auto max-w-[840px] p-7 sm:p-12">
-              <div className="border border-border px-5 py-8 sm:px-10 sm:py-11">
+            <section id="introduction" className="bg-background px-5 pb-20 sm:pb-28">
+            <article className="paper-panel mx-auto max-w-[840px] px-7 pb-7 sm:px-12 sm:pb-12">
+              <div className="border border-border px-5 pb-8 sm:px-10 sm:pb-11">
                   <h2 className="font-display text-[2.625rem] font-medium leading-none text-foreground">Introduction</h2>
                 <div className="mt-8 font-display text-[1.1875rem] leading-[1.75] text-reading">
                   {forewordParagraphs.map((paragraph) => <p key={paragraph} className="mb-4 last:mb-0">{paragraph}</p>)}
@@ -253,10 +267,10 @@ function Index() {
              </div>
            </section>
 
-          <section id="stories" className="scroll-mt-16 px-5 py-20 sm:py-28">
+          <section id="stories" className="px-5 pb-20 sm:pb-28">
             <div className="mx-auto max-w-[840px]">
               <div className="mb-10 border-b border-border pb-5">
-                <h2 className="mt-2 font-display text-5xl font-medium leading-none text-foreground">Stories</h2>
+                <h2 className="font-display text-5xl font-medium leading-none text-foreground">Stories</h2>
               </div>
                <div className="grid gap-7 md:grid-cols-2">
                  {(Object.entries(stories) as [StoryId, typeof stories[StoryId]][]).map(([id, story]) => (
@@ -276,7 +290,7 @@ function Index() {
             </div>
           </section>
 
-            <section id="events" aria-labelledby="event-title" className="scroll-mt-16 border-y border-border bg-footer px-5 py-16 sm:py-20">
+            <section id="upcoming-events" aria-labelledby="event-title" className="border-y border-border bg-footer px-5 pb-16 sm:pb-20">
               <div className="mx-auto max-w-5xl">
                 <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">What’s on in Dullstroom</p>
                 <h2 id="event-title" className="mt-2 font-display text-5xl font-medium text-foreground">Upcoming Events</h2>
@@ -302,10 +316,9 @@ function Index() {
               </div>
            </section>
 
-            <section id="your-story" className="scroll-mt-16 border-t border-border bg-card px-5 py-20 sm:py-28">
+            <section id="your-ghost-story" className="border-t border-border bg-card px-5 pb-20 sm:pb-28">
              <div className="mx-auto max-w-6xl">
-               <p className="text-[0.6875rem] font-semibold uppercase text-muted-foreground">Community archive</p>
-                <h2 className="mt-2 font-display text-5xl font-medium leading-none text-foreground">Your Ghost Story</h2>
+                <h2 className="font-display text-5xl font-medium leading-none text-foreground">Your Ghost Story</h2>
                  <p className="mt-5 max-w-2xl font-display text-xl leading-relaxed text-reading">Send your story to our editor for review. Stories are edited first and are never published automatically.</p>
                 {submitted ? (
                   <div role="status" className="mt-10 border border-primary bg-background p-8 text-center font-display text-2xl text-reading">Story and proof sent!</div>
@@ -338,7 +351,7 @@ function Index() {
                     <Button type="submit" disabled={!submissionReady || writerSending} className="w-full sm:w-auto sm:justify-self-start"><Mail className="h-4 w-4" aria-hidden="true" />{writerSending ? "Sending..." : "Email story for editing"}</Button>
                  </form>
                )}
-                <div id="payment" className="scroll-mt-24 mt-12 border border-border bg-background p-7 sm:p-9">
+                <div id="payment" className="border border-border bg-background px-7 pb-7 sm:px-9 sm:pb-9">
                   <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Payment</p>
                   <h3 className="mt-3 font-display text-3xl font-semibold text-foreground">Editing &amp; hosting fee</h3>
                   <p className="mt-3 text-sm leading-6 text-muted-foreground">Pay for your story to be reviewed and accepted</p>
@@ -394,7 +407,7 @@ function Index() {
       {activeStory && <SiteFooter />}
 
       {unlockingStory && (
-        <div className="fixed inset-0 z-[100] grid place-items-center bg-background/90 p-4" role="dialog" aria-modal="true" aria-labelledby="unlock-title">
+        <div className="fixed inset-0 z-[10000] grid place-items-center bg-background/90 p-4" role="dialog" aria-modal="true" aria-labelledby="unlock-title">
           <div className="relative max-h-[92vh] w-full max-w-lg overflow-y-auto border border-border bg-card p-6 shadow-2xl sm:p-8">
             <Button type="button" variant="outline" aria-label="Close payment" className="absolute right-4 top-4 min-h-10 px-3 py-2" onClick={() => setUnlockingStory(null)}><X className="h-4 w-4" aria-hidden="true" /></Button>
             <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Bank payment</p>
@@ -436,7 +449,7 @@ function Index() {
       )}
 
       {enlargedImage && (
-        <div className="fixed inset-0 z-[110] grid place-items-center bg-background/95 p-4" role="dialog" aria-modal="true" aria-label="Enlarged poster" onClick={() => setEnlargedImage(null)}>
+        <div className="fixed inset-0 z-[10001] grid place-items-center bg-background/95 p-4" role="dialog" aria-modal="true" aria-label="Enlarged poster" onClick={() => setEnlargedImage(null)}>
           <button type="button" aria-label="Close enlarged poster" className="absolute right-4 top-4 min-h-10 border border-border bg-card px-3 py-2 text-muted-foreground hover:text-foreground" onClick={() => setEnlargedImage(null)}>
             <X className="h-4 w-4" aria-hidden="true" />
           </button>
