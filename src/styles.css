@@ -66,6 +66,8 @@
   scroll-margin-top: max(90px, var(--header-height));
 }
 
+#payment { min-height: calc(100dvh - var(--header-height)); }
+
 @media (min-width: 641px) and (max-width: 1023px) {
   header > div { flex-wrap: wrap; justify-content: center; padding-block: 0.65rem; }
   header nav { flex-wrap: wrap; }

@@ -211,7 +211,7 @@ function Index() {
   const currentUnlocked = activeStory ? unlockedStories.includes(activeStory) : false;
 
   return (
-    <main className="min-h-screen overflow-x-hidden bg-background text-foreground">
+    <main className="min-h-screen bg-background text-foreground">
       <header ref={headerRef} className="fixed left-0 top-0 z-[9999] w-full border-b border-border/80 bg-background/95 backdrop-blur-md">
         <div className="mx-auto flex min-h-[90px] max-w-6xl items-center justify-between gap-4 px-5 lg:px-8">
           <button type="button" className="font-display text-lg font-semibold uppercase tracking-[0.09em] text-foreground sm:text-xl" onClick={() => { setActiveStory(null); window.scrollTo({ top: 0, behavior: "smooth" }); }}>
