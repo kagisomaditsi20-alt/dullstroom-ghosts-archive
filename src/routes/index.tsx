@@ -119,6 +119,12 @@ function Index() {
   const [writerProof, setWriterProof] = useState<File | null>(null);
   const [writerSending, setWriterSending] = useState(false);
   const [writerError, setWriterError] = useState("");
+  const storyFileRef = useRef<HTMLInputElement>(null);
+  const writerProofRef = useRef<HTMLInputElement>(null);
+  const successTimer = useRef<number | undefined>(undefined);
+
+  useEffect(() => () => window.clearTimeout(successTimer.current), []);
+
   const [unlockingStory, setUnlockingStory] = useState<StoryId | null>(null);
   const [proofEmail, setProofEmail] = useState("");
   const [proofFile, setProofFile] = useState<File | null>(null);
@@ -200,12 +206,27 @@ function Index() {
     try {
       await submitWriterStory({ data: form });
       setSubmitted(true);
+      window.clearTimeout(successTimer.current);
+      successTimer.current = window.setTimeout(resetWriterForm, 5000);
     } catch {
       setWriterError("Sending failed. Please check your files (max 10MB each) and try again.");
     } finally {
       setWriterSending(false);
     }
   }
+
+  function resetWriterForm() {
+    // The form is back to a clean state so the next author can send their own story and proof.
+    setSubmitted(false);
+    setSubmission({ email: "", title: "" });
+    setPermissions([false, false, false]);
+    setStoryFile(null);
+    setWriterProof(null);
+    setWriterError("");
+    if (storyFileRef.current) storyFileRef.current.value = "";
+    if (writerProofRef.current) writerProofRef.current.value = "";
+  }
+
 
   const currentStory = activeStory ? stories[activeStory] : null;
   const currentUnlocked = activeStory ? unlockedStories.includes(activeStory) : false;
@@ -329,10 +350,11 @@ function Index() {
                       <FormField label="Author Email" name="email" type="email" value={submission.email} onChange={(value) => setSubmission({ ...submission, email: value })} />
                     </div>
                     <label className="grid gap-2 text-sm font-semibold text-foreground" htmlFor="story-file">Story file (DOC, DOCX, PDF or TXT)
-                      <input id="story-file" type="file" required accept=".doc,.docx,.pdf,.txt" onChange={(event) => setStoryFile(event.target.files?.[0] ?? null)} className="form-control file:mr-3 file:border-0 file:bg-primary file:px-3 file:py-2 file:text-primary-foreground" />
+                      <input ref={storyFileRef} id="story-file" type="file" required accept=".doc,.docx,.pdf,.txt" onChange={(event) => setStoryFile(event.target.files?.[0] ?? null)} className="form-control file:mr-3 file:border-0 file:bg-primary file:px-3 file:py-2 file:text-primary-foreground" />
                     </label>
                     <label className="grid gap-2 text-sm font-semibold text-foreground" htmlFor="writer-proof">Proof of payment (JPG, PNG or PDF)
-                      <input id="writer-proof" type="file" required accept=".jpg,.jpeg,.png,.pdf" onChange={(event) => setWriterProof(event.target.files?.[0] ?? null)} className="form-control file:mr-3 file:border-0 file:bg-primary file:px-3 file:py-2 file:text-primary-foreground" />
+                      <input ref={writerProofRef} id="writer-proof" type="file" required accept=".jpg,.jpeg,.png,.pdf" onChange={(event) => setWriterProof(event.target.files?.[0] ?? null)} className="form-control file:mr-3 file:border-0 file:bg-primary file:px-3 file:py-2 file:text-primary-foreground" />
+
                     </label>
                     <fieldset className="grid gap-4 border-t border-border pt-6">
                       <legend className="mb-4 font-display text-2xl font-semibold text-foreground">Permissions</legend>
