@@ -245,6 +245,7 @@ function Index() {
             <a href="#upcoming-events" onClick={() => setActiveStory(null)} className="nav-link">Upcoming Events</a>
             <a href="#your-ghost-story" onClick={() => setActiveStory(null)} className="nav-link">Your Ghost Story</a>
             <a href="#payment" onClick={() => setActiveStory(null)} className="nav-link">Payment</a>
+            <a href="mailto:dullstroomghosts@yahoo.com" className="nav-link">Contact Us</a>
           </nav>
         </div>
       </header>
@@ -387,7 +388,12 @@ function Index() {
                       <dt className="text-muted-foreground">Branch code</dt><dd>051001</dd>
                       <dt className="text-muted-foreground">Amount</dt><dd>{CURRENCY}{EDITING_HOSTING_FEE}</dd>
                       <dt className="text-muted-foreground">Reference</dt><dd>Story Name + Your Email (e.g. Children At Play john@gmail.com)</dd>
-                    </dl>
+                     </dl>
+                  </div>
+                  <div className="mt-4 border border-foreground/40 bg-card p-5">
+                    <h4 className="font-display text-xl font-semibold text-foreground">Need help?</h4>
+                    <p className="mt-2 text-sm leading-6 text-muted-foreground">If you have not received the story you bought, please email us.</p>
+                    <a href="mailto:dullstroomghosts@yahoo.com" className="mt-2 inline-block text-sm underline underline-offset-2 transition-colors hover:text-primary">dullstroomghosts@yahoo.com</a>
                   </div>
                 </div>
              </div>
