@@ -245,7 +245,6 @@ function Index() {
             <a href="#upcoming-events" onClick={() => setActiveStory(null)} className="nav-link">Upcoming Events</a>
             <a href="#your-ghost-story" onClick={() => setActiveStory(null)} className="nav-link">Your Ghost Story</a>
             <a href="#payment" onClick={() => setActiveStory(null)} className="nav-link">Payment</a>
-            <a href="https://dullstroomghosts.co.za" target="_blank" rel="noopener noreferrer" className="nav-link">Contact Us</a>
           </nav>
         </div>
       </header>
